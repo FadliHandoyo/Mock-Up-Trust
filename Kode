@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>TRUST — Audit & Monitoring PSAIMS</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg:      #0C1019;
+  --dark:    #111620;
+  --mid:     #182030;
+  --panel:   #1C2840;
+  --card:    #141C2C;
+  --border:  #253450;
+  --bord2:   #182035;
+  --txt:     #D0D8E8;
+  --dim:     #6A7A94;
+  --mute:    #3A4A60;
+  --blue:    #4A9EE8;
+  --lime:    #A8D636;
+  --org:     #E8920C;
+  --red:     #E85050;
+  --yel:     #E8C040;
+  --teal:    #2EC4B6;
+  --pur:     #8B5CF6;
+  --cyan:    #22D3EE;
+  --grn:     #34D399;
+  --pink:    #F472B6;
+
+  /* Audit accent */
+  --audit:   #A8D636;
+}
+body {
+  font-family: 'Exo 2', sans-serif;
+  background: var(--bg); color: var(--txt);
+  display: flex; flex-direction: column;
+  height: 100vh; overflow: hidden;
+}
+
+/* ── TOP NAV ── */
+.topnav { height:50px; background:var(--dark); border-bottom:1px solid var(--border); display:flex; align-items:center; flex-shrink:0; }
+.hamburger { width:50px; height:50px; display:flex; align-items:center; justify-content:center; font-size:18px; color:var(--dim); cursor:pointer; border-right:1px solid var(--border); }
+.logo { padding:0 16px; height:50px; display:flex; align-items:center; gap:9px; border-right:1px solid var(--border); }
+.logo-word { font-family:'Rajdhani',sans-serif; font-size:28px; font-weight:700; line-height:1; }
+.logo-word .t { color:var(--blue); } .logo-word .r { color:var(--txt); }
+.logo-sub { font-size:7px; color:var(--mute); line-height:1.3; max-width:90px; }
+.nav-links { display:flex; align-items:center; height:50px; padding:0 6px; flex:1; }
+.nl { padding:0 13px; height:50px; display:flex; align-items:center; gap:6px; font-size:12.5px; font-weight:500; color:var(--dim); cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap; transition:.15s; }
+.nl:hover { color:var(--txt); }
+.nl.active { color:var(--blue); border-bottom-color:var(--blue); }
+.nav-admin { margin-left:auto; margin-right:14px; padding:6px 14px; border:1px solid var(--border); border-radius:5px; font-size:12px; font-weight:600; color:var(--txt); background:var(--mid); display:flex; align-items:center; gap:7px; }
+
+/* ── BODY ── */
+.app-body { display:flex; flex:1; overflow:hidden; }
+
+/* ── SIDEBAR ── */
+.sidebar { width:88px; background:var(--dark); border-right:1px solid var(--border); display:flex; flex-direction:column; align-items:center; overflow-y:auto; flex-shrink:0; }
+.sidebar::-webkit-scrollbar { width:0; }
+.mod { width:100%; padding:11px 6px 10px; display:flex; flex-direction:column; align-items:center; gap:5px; cursor:pointer; border-left:3px solid transparent; border-bottom:1px solid var(--bord2); transition:.15s; color:var(--mute); position:relative; }
+.mod:hover { background:rgba(255,255,255,.04); color:var(--dim); }
+.mod.sel { background:rgba(168,214,54,.1); border-left-color:var(--audit); color:var(--audit); }
+.mod .arrow { position:absolute; right:5px; top:50%; transform:translateY(-50%); font-size:9px; color:var(--mute); opacity:.6; }
+.mod-ico { font-size:20px; line-height:1; }
+.mod-lbl { font-size:8px; font-weight:600; text-align:center; line-height:1.2; max-width:76px; color:inherit; }
+.mod-badge { position:absolute; top:6px; right:6px; min-width:15px; height:15px; border-radius:8px; font-size:8px; font-weight:700; color:white; display:flex; align-items:center; justify-content:center; padding:0 3px; font-family:'Share Tech Mono',monospace; }
+.mod-divider { width:55px; height:1px; background:var(--border); margin:4px 0; flex-shrink:0; }
+.mod-section { font-size:7px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:var(--mute); text-align:center; padding:3px 0 2px; }
+
+/* ── TREE ── */
+.tree-panel { width:235px; background:var(--dark); border-right:1px solid var(--border); display:flex; flex-direction:column; flex-shrink:0; }
+.tree-hdr { padding:7px 10px; border-bottom:1px solid var(--border); background:var(--mid); display:flex; align-items:center; justify-content:space-between; }
+.tree-hdr-title { font-size:12px; font-weight:600; }
+.thbtns { display:flex; gap:3px; }
+.thb { width:24px; height:24px; border-radius:4px; border:1px solid var(--border); background:var(--dark); display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--dim); cursor:pointer; }
+.tree { overflow-y:auto; flex:1; }
+.tree::-webkit-scrollbar { width:3px; }
+.tree::-webkit-scrollbar-thumb { background:var(--border); }
+.tn { display:flex; align-items:center; gap:5px; padding:5px 8px; font-size:11.5px; cursor:pointer; color:var(--dim); }
+.tn:hover { background:rgba(255,255,255,.04); }
+.tn.sel { background:rgba(168,214,54,.08); color:var(--audit); }
+.tn .arr { font-size:7px; width:10px; color:var(--mute); flex-shrink:0; }
+.i1{padding-left:20px} .i2{padding-left:34px} .i3{padding-left:48px}
+
+/* ── MAIN ── */
+.main { flex:1; overflow:hidden; display:flex; flex-direction:column; }
+
+/* ── SUBNAV ── */
+.subnav { background:var(--dark); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-shrink:0; padding:0 16px; }
+.stabs { display:flex; overflow-x:auto; }
+.stabs::-webkit-scrollbar { height:0; }
+.stab { padding:0 16px; height:46px; display:flex; align-items:center; gap:7px; font-size:12px; font-weight:500; color:var(--dim); cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap; transition:.12s; }
+.stab:hover { color:var(--txt); }
+.stab.active { color:var(--audit); border-bottom-color:var(--audit); font-weight:600; }
+.stab .nb { font-size:9px; padding:1px 6px; border-radius:8px; font-weight:700; }
+.sactions { display:flex; gap:7px; padding:6px 0; flex-shrink:0; }
+.sbtn { display:flex; align-items:center; gap:5px; padding:5px 12px; border-radius:4px; font-size:11px; font-weight:600; border:1px solid var(--border); background:var(--panel); color:var(--dim); cursor:pointer; white-space:nowrap; }
+.sbtn.p { background:var(--audit); border-color:var(--audit); color:#0C1019; }
+
+/* ── CONTENT ── */
+.content { flex:1; overflow-y:auto; padding:14px 16px; }
+.content::-webkit-scrollbar { width:4px; }
+.content::-webkit-scrollbar-thumb { background:var(--border); }
+.page { display:none; }
+.page.active { display:block; }
+
+/* SECTION LABEL */
+.sec-lbl { font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:1.2px; color:var(--mute); display:flex; align-items:center; gap:8px; margin-bottom:10px; margin-top:4px; }
+.sec-lbl::after { content:''; flex:1; height:1px; background:var(--bord2); }
+.sdot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+
+/* KPI */
+.kpi-row { display:grid; gap:9px; margin-bottom:14px; }
+.kpi-5 { grid-template-columns:repeat(5,1fr); }
+.kpi-4 { grid-template-columns:repeat(4,1fr); }
+.kpi-6 { grid-template-columns:repeat(6,1fr); }
+.kc { background:var(--card); border:1px solid var(--border); border-radius:6px; padding:12px 12px 11px; position:relative; overflow:hidden; cursor:pointer; transition:.15s; }
+.kc:hover { border-color:rgba(255,255,255,.12); }
+.kc-top { position:absolute; top:0; left:0; right:0; height:2px; }
+.kc-ico { font-size:16px; margin-bottom:7px; display:block; }
+.kc-val { font-size:22px; font-weight:700; font-family:'Share Tech Mono',monospace; line-height:1; margin-bottom:3px; }
+.kc-lbl { font-size:9px; color:var(--mute); text-transform:uppercase; letter-spacing:.4px; margin-bottom:5px; }
+.kc-sub { font-size:10px; }
+
+/* GRID */
+.g2  { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+.g3  { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:12px; }
+.g32 { display:grid; grid-template-columns:2fr 1fr; gap:12px; margin-bottom:12px; }
+.g23 { display:grid; grid-template-columns:1fr 2fr; gap:12px; margin-bottom:12px; }
+.g31 { display:grid; grid-template-columns:3fr 1fr; gap:12px; margin-bottom:12px; }
+.g211{ display:grid; grid-template-columns:2fr 1fr 1fr; gap:12px; margin-bottom:12px; }
+
+/* PANEL */
+.panel { background:var(--card); border:1px solid var(--border); border-radius:6px; overflow:hidden; }
+.ph { background:var(--panel); border-bottom:1px solid var(--border); padding:8px 13px; display:flex; align-items:center; justify-content:space-between; }
+.pt { font-size:12px; font-weight:600; color:var(--txt); display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.ptag { font-size:9px; padding:2px 7px; border-radius:10px; font-weight:700; }
+.pa { font-size:10.5px; color:var(--blue); cursor:pointer; font-weight:500; white-space:nowrap; }
+.pb { padding:10px 13px; }
+
+/* TABLE */
+.dt { width:100%; border-collapse:collapse; font-size:11.5px; }
+.dt th { background:var(--panel); color:var(--dim); font-weight:600; padding:7px 11px; text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:.5px; border-bottom:1px solid var(--border); white-space:nowrap; }
+.dt td { padding:7px 11px; border-bottom:1px solid var(--bord2); color:var(--dim); vertical-align:middle; }
+.dt tr:hover td { background:rgba(255,255,255,.025); }
+.dt tr:last-child td { border-bottom:none; }
+.dt td.hi { color:var(--txt); font-weight:500; }
+
+/* BADGES */
+.badge { display:inline-flex; align-items:center; padding:2px 8px; border-radius:3px; font-size:9.5px; font-weight:700; white-space:nowrap; }
+.b-r  { background:rgba(232,80,80,.14);  color:#F08080;       border:1px solid rgba(232,80,80,.3); }
+.b-y  { background:rgba(232,192,64,.14); color:var(--yel);    border:1px solid rgba(232,192,64,.3); }
+.b-g  { background:rgba(168,214,54,.14); color:var(--lime);   border:1px solid rgba(168,214,54,.3); }
+.b-b  { background:rgba(74,158,232,.14); color:var(--blue);   border:1px solid rgba(74,158,232,.3); }
+.b-o  { background:rgba(232,146,12,.14); color:var(--org);    border:1px solid rgba(232,146,12,.3); }
+.b-t  { background:rgba(46,196,182,.14); color:var(--teal);   border:1px solid rgba(46,196,182,.3); }
+.b-p  { background:rgba(139,92,246,.14); color:var(--pur);    border:1px solid rgba(139,92,246,.3); }
+.b-a  { background:rgba(168,214,54,.14); color:var(--audit);  border:1px solid rgba(168,214,54,.3); }
+.b-d  { background:rgba(255,255,255,.05);color:var(--mute);   border:1px solid var(--border); }
+.b-nc { background:rgba(232,80,80,.2);   color:#FF8080;       border:1px solid rgba(232,80,80,.4); font-size:8.5px; padding:2px 6px; }
+.b-obs{ background:rgba(232,192,64,.15); color:var(--yel);    border:1px solid rgba(232,192,64,.3); font-size:8.5px; padding:2px 6px; }
+.b-ok { background:rgba(168,214,54,.13); color:var(--lime);   border:1px solid rgba(168,214,54,.25); font-size:8.5px; padding:2px 6px; }
+
+/* PROGRESS BAR */
+.cr { display:flex; align-items:center; gap:8px; margin-bottom:7px; }
+.cl { font-size:10.5px; color:var(--dim); width:145px; flex-shrink:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.cb { flex:1; height:6px; background:var(--mid); border-radius:4px; overflow:hidden; }
+.cf { height:100%; border-radius:4px; transition:width .3s; }
+.cv { font-size:10px; font-family:'Share Tech Mono',monospace; font-weight:600; width:36px; text-align:right; flex-shrink:0; }
+
+/* ALERT */
+.alert { border-radius:5px; padding:9px 14px; margin-bottom:12px; display:flex; align-items:center; gap:10px; font-size:12px; }
+.alert-red { background:rgba(232,80,80,.07); border:1px solid rgba(232,80,80,.2); border-left:3px solid var(--red); color:#F08080; }
+.alert strong { color:var(--red); }
+.alert-lnk { margin-left:auto; color:var(--red); font-size:11px; font-weight:600; cursor:pointer; white-space:nowrap; }
+
+/* ═══════════════════════════════════════
+   18 ELEMEN GRID — tampilan utama
+═══════════════════════════════════════ */
+.elemen-grid {
+  display:grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap:10px;
+  margin-bottom:14px;
+}
+
+.elemen-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:7px;
+  padding:13px 11px 11px;
+  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+  transition:all .2s;
+}
+.elemen-card:hover {
+  transform:translateY(-2px);
+  border-color:rgba(255,255,255,.15);
+  box-shadow:0 8px 24px rgba(0,0,0,.3);
+}
+.elemen-card::before {
+  content:'';
+  position:absolute;
+  top:0; left:0; right:0;
+  height:3px;
+  border-radius:7px 7px 0 0;
+}
+
+/* Color per score band */
+.ec-green  { }
+.ec-green::before  { background:var(--lime); }
+.ec-yellow { }
+.ec-yellow::before { background:var(--yel); }
+.ec-orange { }
+.ec-orange::before { background:var(--org); }
+.ec-red    { }
+.ec-red::before    { background:var(--red); }
+
+.ec-num { font-size:9px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; color:var(--mute); margin-bottom:5px; font-family:'Share Tech Mono',monospace; }
+.ec-name { font-size:10.5px; font-weight:700; color:var(--txt); margin-bottom:10px; line-height:1.35; min-height:42px; }
+.ec-score { font-size:26px; font-weight:700; font-family:'Share Tech Mono',monospace; line-height:1; margin-bottom:5px; }
+.ec-bar-bg { height:4px; background:var(--mid); border-radius:2px; overflow:hidden; margin-bottom:6px; }
+.ec-bar-fill { height:100%; border-radius:2px; }
+.ec-footer { display:flex; align-items:center; justify-content:space-between; }
+.ec-finding { font-size:9px; color:var(--mute); }
+.ec-trend { font-size:10px; font-weight:700; }
+
+/* ─── ACTIVITY ─── */
+.ai { display:flex; gap:9px; padding:8px 0; border-bottom:1px solid var(--bord2); }
+.ai:last-child { border-bottom:none; }
+.aln { display:flex; flex-direction:column; align-items:center; flex-shrink:0; width:12px; }
+.adot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.aconn { width:1px; flex:1; background:var(--bord2); margin-top:3px; }
+.ac { flex:1; }
+.at { font-size:11.5px; font-weight:600; color:var(--txt); margin-bottom:2px; }
+.am { font-size:10px; color:var(--mute); }
+.ats { font-size:9.5px; color:var(--mute); font-family:'Share Tech Mono',monospace; white-space:nowrap; }
+
+/* ─── STATUS ROW ─── */
+.sr { display:flex; align-items:center; padding:8px 0; border-bottom:1px solid var(--bord2); gap:10px; }
+.sr:last-child { border-bottom:none; }
+.sr-l { flex:1; }
+.sr-name { font-size:11.5px; font-weight:600; color:var(--txt); }
+.sr-sub  { font-size:10px; color:var(--mute); margin-top:1px; }
+.sr-r { display:flex; align-items:center; gap:7px; }
+
+/* ─── FINDING CARD ─── */
+.finding-card {
+  background:var(--panel); border:1px solid var(--border);
+  border-radius:5px; padding:11px 13px; margin-bottom:8px;
+  cursor:pointer; transition:border-color .15s;
+}
+.finding-card:last-child { margin-bottom:0; }
+.finding-card:hover { border-color:rgba(255,255,255,.15); }
+.fc-top { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+.fc-id  { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--dim); }
+.fc-title { font-size:12px; font-weight:600; color:var(--txt); flex:1; }
+.fc-body { font-size:10.5px; color:var(--dim); line-height:1.5; margin-bottom:7px; }
+.fc-footer { display:flex; align-items:center; gap:8px; font-size:10px; color:var(--mute); flex-wrap:wrap; }
+
+/* ─── AUDIT PLAN TIMELINE ─── */
+.apt-header {
+  display:grid; grid-template-columns:180px 1fr;
+  gap:0; border-bottom:1px solid var(--border);
+  background:var(--panel); padding:8px 13px;
+}
+.apt-label-col { font-size:10px; font-weight:600; color:var(--dim); text-transform:uppercase; letter-spacing:.5px; }
+.apt-months { display:grid; grid-template-columns:repeat(12,1fr); gap:0; }
+.apt-mon { font-size:9px; color:var(--mute); text-align:center; font-weight:600; }
+
+.apt-row {
+  display:grid; grid-template-columns:180px 1fr;
+  border-bottom:1px solid var(--bord2); padding:4px 13px;
+  align-items:center;
+}
+.apt-row:last-child { border-bottom:none; }
+.apt-row:hover { background:rgba(255,255,255,.02); }
+.apt-name { font-size:10.5px; color:var(--dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding-right:8px; }
+.apt-bar-area { display:grid; grid-template-columns:repeat(12,1fr); gap:2px; height:18px; align-items:center; }
+.apt-bar {
+  height:14px; border-radius:3px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:8px; font-weight:700; cursor:pointer;
+}
+.apt-done    { background:rgba(168,214,54,.25); border:1px solid rgba(168,214,54,.4); color:var(--lime); }
+.apt-plan    { background:rgba(74,158,232,.2);  border:1px solid rgba(74,158,232,.35); color:var(--blue); }
+.apt-overdue { background:rgba(232,80,80,.25);  border:1px solid rgba(232,80,80,.4);  color:var(--red); }
+.apt-today   { border-left:2px solid var(--org); }
+
+/* ─── ELEMEN DETAIL PANEL ─── */
+.ed-score-ring {
+  width:90px; height:90px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  flex-direction:column; flex-shrink:0;
+}
+.ed-score-val { font-size:26px; font-weight:700; font-family:'Share Tech Mono',monospace; line-height:1; }
+.ed-score-lbl { font-size:8.5px; text-transform:uppercase; letter-spacing:.5px; opacity:.6; margin-top:2px; }
+
+/* ─── PARETO ─── */
+.pareto-row { display:flex; align-items:center; gap:8px; margin-bottom:7px; }
+.pareto-lbl { font-size:10.5px; color:var(--dim); width:155px; flex-shrink:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.pareto-bg  { flex:1; height:16px; background:var(--mid); border-radius:3px; overflow:hidden; }
+.pareto-fill{ height:100%; border-radius:3px; display:flex; align-items:center; padding-left:7px; }
+.pareto-fill span { font-size:8.5px; font-weight:700; color:rgba(255,255,255,.75); font-family:'Share Tech Mono',monospace; }
+.pareto-cnt { font-size:10px; font-family:'Share Tech Mono',monospace; color:var(--txt); font-weight:600; width:20px; text-align:right; }
+
+/* RADAR CHART (CSS polygon) */
+.radar-wrap { display:flex; align-items:center; justify-content:center; padding:10px; }
+svg.radar { overflow:visible; }
+
+/* SCHEDULE ITEM */
+.si { display:flex; align-items:center; gap:9px; padding:8px 0; border-bottom:1px solid var(--bord2); }
+.si:last-child { border-bottom:none; }
+.sd { width:40px; height:40px; border-radius:6px; display:flex; flex-direction:column; align-items:center; justify-content:center; flex-shrink:0; }
+.sd .d { font-size:16px; font-weight:700; font-family:'Share Tech Mono',monospace; line-height:1; }
+.sd .m { font-size:7.5px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; }
+.sin { flex:1; overflow:hidden; }
+.sn { font-size:11px; font-weight:600; color:var(--txt); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.ss { font-size:9.5px; color:var(--mute); }
+
+/* DASHBOARD OVERVIEW */
+.ov-ring {
+  width:110px; height:110px; border-radius:50%;
+  background:conic-gradient(var(--audit) 0% 87%, var(--bord2) 87% 100%);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+.ov-ring-inner {
+  width:82px; height:82px; border-radius:50%;
+  background:var(--card);
+  display:flex; align-items:center; justify-content:center;
+  flex-direction:column;
+}
+.ov-score { font-size:22px; font-weight:700; font-family:'Share Tech Mono',monospace; color:var(--audit); line-height:1; }
+.ov-label { font-size:8px; color:var(--mute); text-transform:uppercase; letter-spacing:.4px; margin-top:2px; }
+
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <div class="hamburger">☰</div>
+  <div class="logo">
+    <div class="logo-word"><span class="t">T</span><span class="r">RUST</span></div>
+    <div class="logo-sub">Total Reliability & Unified System for Tracking Asset Integrity</div>
+  </div>
+  <div class="nav-links">
+    <div class="nl">⊞ Dashboard</div>
+    <div class="nl">⚠ Anomaly</div>
+    <div class="nl">⬡ Corrosion</div>
+    <div class="nl">⊙ IOW</div>
+    <div class="nl">◫ IMR</div>
+    <div class="nl active">↑ Export</div>
+    <div class="nl">↓ Import</div>
+    <div class="nl">⊙ SIMOM</div>
+  </div>
+  <div class="nav-admin">⚙ Administrator</div>
+</nav>
+
+<div class="app-body">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="mod"><span class="arrow">›</span><div class="mod-ico">⊞</div><div class="mod-lbl">Dashboard</div></div>
+    <div class="mod"><span class="arrow">›</span><div class="mod-ico">≡</div><div class="mod-lbl">Asset...</div></div>
+    <div class="mod"><span class="arrow">›</span><div class="mod-ico">🔷</div><div class="mod-lbl">Integrity</div></div>
+    <div class="mod"><span class="arrow">›</span><div class="mod-ico">⚙</div><div class="mod-lbl">Reliabil...</div><div class="mod-badge" style="background:var(--red)">2</div></div>
+    <div class="mod"><span class="arrow">›</span><div class="mod-ico">🛡</div><div class="mod-lbl">Safety I.</div></div>
+    <div class="mod"><span class="arrow">›</span><div class="mod-ico">📋</div><div class="mod-lbl">Insp. Pl.</div></div>
+    <div class="mod"><span class="arrow">›</span><div class="mod-ico">◈</div><div class="mod-lbl">Integrit...</div></div>
+    <div class="mod-divider"></div>
+    <div class="mod-section">PSAIMS</div>
+    <div class="mod"><span class="arrow">›</span><div class="mod-ico">🔒</div><div class="mod-lbl">SECE & Perf. Std</div><div class="mod-badge" style="background:var(--red)">3</div></div>
+    <div class="mod"><span class="arrow">›</span><div class="mod-ico">⚡</div><div class="mod-lbl">REL Mgmt</div><div class="mod-badge" style="background:var(--red)">7</div></div>
+    <div class="mod sel"><span class="arrow">›</span><div class="mod-ico">✅</div><div class="mod-lbl">Audit & Mon.</div><div class="mod-badge" style="background:var(--org)">5</div></div>
+    <div class="mod"><span class="arrow">›</span><div class="mod-ico">↻</div><div class="mod-lbl">Mgmt of Change</div><div class="mod-badge" style="background:var(--org)">4</div></div>
+    <div class="mod"><span class="arrow">›</span><div class="mod-ico">◉</div><div class="mod-lbl">QRA NHA+HHA</div></div>
+  </div>
+
+  <!-- TREE -->
+  <div class="tree-panel">
+    <div class="tree-hdr">
+      <div class="tree-hdr-title">Asset Register</div>
+      <div class="thbtns"><div class="thb">⌂</div><div class="thb">⟳</div><div class="thb">✎</div><div class="thb">⌕</div></div>
+    </div>
+    <div class="tree">
+      <div class="tn sel"><span class="arr">▼</span>🏢 LBM — FSRU Lampung</div>
+      <div class="tn i1"><span class="arr">▼</span>🚢 FSRU Lampung</div>
+      <div class="tn i2"><span class="arr">▶</span>📁 Tower Yoke Mooring</div>
+      <div class="tn i2"><span class="arr">▶</span>📁 Subsea Pipeline</div>
+      <div class="tn i2"><span class="arr">▼</span>📁 Onshore Receiving</div>
+      <div class="tn i3"><span class="arr"> </span>⚙ Pressure Letdown</div>
+      <div class="tn i3"><span class="arr"> </span>⚙ Water Bath Heater</div>
+      <div class="tn i3"><span class="arr"> </span>⚙ Gas Filter</div>
+      <div class="tn i3"><span class="arr"> </span>⚙ Metering Skid</div>
+      <div class="tn i3"><span class="arr"> </span>⚗ Odorizer Tank</div>
+      <div class="tn i1"><span class="arr">▶</span>📁 GREEN-ZONE</div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- SUBNAV -->
+    <div class="subnav">
+      <div class="stabs">
+        <div class="stab" onclick="showPage('overview')">📊 Overview Dashboard</div>
+        <div class="stab active" id="tab-elemen" onclick="showPage('elemen')">
+          ✅ 18 Elemen PSAIMS
+        </div>
+        <div class="stab" id="tab-finding" onclick="showPage('finding')">
+          ⚑ Audit Finding
+          <span class="nb b-r">5</span>
+        </div>
+        <div class="stab" id="tab-schedule" onclick="showPage('schedule')">📅 Jadwal Audit</div>
+        <div class="stab" id="tab-history" onclick="showPage('history')">📁 Riwayat Audit</div>
+        <div class="stab" id="tab-tinjauan" onclick="showPage('tinjauan')">👁 Tinjauan Manajemen</div>
+      </div>
+      <div class="sactions">
+        <div class="sbtn">↗ Export</div>
+        <div class="sbtn">⊞ Filter</div>
+        <div class="sbtn p" id="add-btn">+ New Audit</div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ══════════════════════════════
+           PAGE: 18 ELEMEN PSAIMS
+      ══════════════════════════════ -->
+      <div class="page active" id="page-elemen">
+
+        <div class="alert alert-red">
+          ⚠ <strong>5 Open Finding</strong> — Elemen 8 (Prosedur Operasi), Elemen 13 (Tanggap Darurat), Elemen 7 (Analisis Bahaya), Elemen 9 (PSSR), Elemen 15 (Kinerja PS) memiliki temuan yang belum diselesaikan.
+          <span class="alert-lnk">Lihat Finding →</span>
+        </div>
+
+        <!-- OVERALL SCORE BAR -->
+        <div class="panel" style="margin-bottom:14px">
+          <div class="ph">
+            <div class="pt">◈ Compliance Score — 18 Elemen PSAIMS <span class="ptag b-a">Audit Terakhir: Jan 2026</span></div>
+            <div class="pa">Detail Report →</div>
+          </div>
+          <div class="pb" style="display:flex;align-items:center;gap:20px">
+            <div class="ov-ring">
+              <div class="ov-ring-inner">
+                <div class="ov-score">87%</div>
+                <div class="ov-label">Overall</div>
+              </div>
+            </div>
+            <div style="flex:1">
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">
+                <div style="background:rgba(168,214,54,.08);border:1px solid rgba(168,214,54,.2);border-radius:5px;padding:8px 11px;text-align:center">
+                  <div style="font-size:20px;font-weight:700;font-family:'Share Tech Mono',monospace;color:var(--lime)">12</div>
+                  <div style="font-size:9px;color:var(--mute);text-transform:uppercase;letter-spacing:.4px;margin-top:2px">Elemen Baik (≥80%)</div>
+                </div>
+                <div style="background:rgba(232,192,64,.07);border:1px solid rgba(232,192,64,.2);border-radius:5px;padding:8px 11px;text-align:center">
+                  <div style="font-size:20px;font-weight:700;font-family:'Share Tech Mono',monospace;color:var(--yel)">4</div>
+                  <div style="font-size:9px;color:var(--mute);text-transform:uppercase;letter-spacing:.4px;margin-top:2px">Perlu Perhatian (60-79%)</div>
+                </div>
+                <div style="background:rgba(232,80,80,.07);border:1px solid rgba(232,80,80,.2);border-radius:5px;padding:8px 11px;text-align:center">
+                  <div style="font-size:20px;font-weight:700;font-family:'Share Tech Mono',monospace;color:var(--red)">2</div>
+                  <div style="font-size:9px;color:var(--mute);text-transform:uppercase;letter-spacing:.4px;margin-top:2px">Kritis (&lt;60%)</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:5px">
+                <div style="font-size:10.5px;color:var(--dim)">Progress keseluruhan</div>
+                <div style="flex:1;height:8px;background:var(--mid);border-radius:4px;overflow:hidden">
+                  <div style="width:87%;height:100%;background:linear-gradient(90deg,var(--lime),var(--teal));border-radius:4px"></div>
+                </div>
+                <div style="font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--lime);font-weight:700">87%</div>
+              </div>
+              <div style="font-size:10px;color:var(--mute)">Target compliance 2026: <span style="color:var(--audit);font-weight:600">90%</span> · Gap: <span style="color:var(--org);font-weight:600">3%</span> · Estimasi tercapai: Q3 2026</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 18 ELEMEN GRID -->
+        <div class="sec-lbl"><div class="sdot" style="background:var(--audit)"></div>18 Elemen PSAIMS — Status Compliance</div>
+        <div class="elemen-grid">
+
+          <!-- El. 1 -->
+          <div class="elemen-card ec-green" onclick="showElDetail(1)">
+            <div class="ec-num">El. 01</div>
+            <div class="ec-name">Kepemimpinan dan Akuntabilitas</div>
+            <div class="ec-score" style="color:var(--lime)">95<span style="font-size:14px">%</span></div>
+            <div class="ec-bar-bg"><div class="ec-bar-fill" style="width:95%;background:var(--lime)"></div></div>
+            <div class="ec-footer">
+              <div class="ec-finding" style="color:var(--mute)">0 finding</div>
+              <div class="ec-trend" style="color:var(--lime)">↑ +2%</div>
+            </div>
+          </div>
+
+          <!-- El. 2 -->
+          <div class="elemen-card ec-green" onclick="showElDetail(2)">
+            <div class="ec-num">El. 02</div>
+            <div class="ec-name">Kebijakan PSAIMS</div>
+            <div class="ec-score" style="color:var(--lime)">92<span style="font-size:14px">%</span></div>
+            <div class="ec-bar-bg"><div class="ec-bar-fill" style="width:92%;background:var(--lime)"></div></div>
+            <div class="ec-footer">
+              <div class="ec-finding" style="color:var(--mute)">0 finding</div>
+              <div class="ec-trend" style="color:var(--lime)">↑ +5%</div>
+            </div>
+          </div>
+
+          <!-- El. 3 -->
+          <div class="elemen-card ec-green" onclick="showElDetail(3)">
+            <div class="ec-num">El. 03</div>
+            <div class="ec-name">Kepatuhan Regulasi, Standar & Lisensi</div>
+            <div class="ec-score" style="color:var(--lime)">88<span style="font-size:14px">%</span></div>
+            <div class="ec-bar-bg"><div class="ec-bar-fill" style="width:88%;background:var(--lime)"></div></div>
+            <div class="ec-footer">
+              <div class="ec-finding" style="color:var(--mute)">0 finding</div>
+              <div class="ec-trend" style="color:var(--teal)">→ 0%</div>
+            </div>
+          </div>
+
+          <!-- El. 4 -->
+          <div class="elemen-card ec-green" onclick="showElDetail(4)">
+            <div class="ec-num">El. 04</div>
+            <div class="ec-name">Organisasi, Kompetensi & Partisipasi Pekerja</div>
+            <div class="ec-score" style="color:var(--lime)">86<span style="font-size:14px">%</span></div>
+            <div class="ec-bar-bg"><div class="ec-bar-fill" style="width:86%;background:var(--lime)"></div></div>
+            <div class="ec-footer">
+              <div class="ec-finding" style="color:var(--mute)">0 finding</div>
+              <div class="ec-trend" style="color:var(--lime)">↑ +3%</div>
+            </div>
+          </div>
+
+          <!-- El. 5 -->
+          <div class="elemen-card ec-green" onclick="showElDetail(5)">
+            <div class="ec-num">El. 05</div>
+            <div class="ec-name">Keselamatan Kontraktor</div>
+            <div class="ec-score" style="color:var(--lime)">84<span style="font-size:14px">%</span></div>
+            <div class="ec-bar-bg"><div class="ec-bar-fill" style="width:84%;background:var(--lime)"></div></div>
+            <div class="ec-footer">
+              <div class="ec-finding" style="color:var(--mute)">0 finding</div>
+              <div class="ec-trend" style="color:var(--lime)">↑ +1%</div>
+            </div>
+          </div>
+
+          <!-- El. 6 -->
+          <div class="elemen-card ec-green" onclick="showElDetail(6)">
+            <div class="ec-num">El. 06</div>
+            <div class="ec-name">Informasi Keselamatan Proses</div>
+            <div class="ec-score" style="color:var(--lime)">92<span style="font-size:14px">%</span></div>
+            <div class="ec-bar-bg"><div class="ec-bar-fill" style="width:92%;background:var(--lime)"></div></div>
+            <div class="ec-footer">
+              <div class="ec-finding" style="color:var(--mute)">0 finding</div>
+              <div class="ec-trend" style="color:var(--lime)">↑ +4%</div>
+            </div>
+          </div>
+
+          <!-- El. 7 -->
+          <div class="elemen-card ec-yellow" onclick="showElDetail(7)">
+            <div class="ec-num">El. 07</div>
+            <div class="ec-name">Analisis Bahaya Proses</div>
+            <div class="ec-score" style="color:var(--yel)">78<span style="font-size:14px">%</span></div>
+            <div class="ec-bar-bg"><div class="ec-bar-fill" style="width:78%;background:var(--yel)"></div></div>
+            <div class="ec-footer">
+              <div class="ec-finding" style="color:var(--red)">⚑ 1 finding</div>
+              <div class="ec-trend" style="color:var(--red)">↓ -2%</div>
+            </div>
+          </div>
+
+          <!-- El. 8 -->
+          <div class="elemen-card ec-red" onclick="showElDetail(8)">
+            <div class="ec-num">El. 08</div>
+            <div class="ec-name">Prosedur Operasi</div>
+            <div class="ec-score" style="color:var(--red)">55<span style="font-size:14px">%</span></div>
+            <div class="ec-bar-bg"><div class="ec-bar-fill" style="width:55%;background:var(--red)"></div></div>
+            <div class="ec-footer">
+              <div class="ec-finding" style="color:var(--red)">⚑ 2 finding</div>
+              <div class="ec-trend" style="color:var(--red)">↓ -5%</div>
+            </div>
+          </div>
+
+          <!-- El. 9 -->
+          <div class="elemen-card ec-yellow" onclick="showElDetail(9)">
+            <div class="ec-num">El. 09</div>
+            <div class="ec-name">Kesiapan Operasi / PSSR</div>
+            <div class="ec-score" style="color:var(--yel)">72<span style="font-size:14px">%</span></div>
+            <div class="ec-bar-bg"><div class="ec-bar-fill" style="width:72%;background:var(--yel)"></div></div>
+            <div class="ec-footer">
+              <div class="ec-finding" style="color:var(--red)">⚑ 1 finding</div>
+              <div class="ec-trend" style="color:var(--teal)">→ 0%</div>
+            </div>
+          </div>
+
+          <!-- El. 10 -->
+          <div class="elemen-card ec-yellow" onclick="showElDetail(10)">
+            <div class="ec-num">El. 10</div>
+            <div class="ec-name">Integritas Aset</div>
+            <div class="ec-score" style="color:var(--yel)">78<span style="font-size:14px">%</span></div>
+            <div class="ec-bar-bg"><div class="ec-bar-fill" style="width:78%;background:var(--yel)"></div></div>
+            <div class="ec-footer">
+              <div class="ec-finding" style="color:var(--mute)">0 finding</div>
+              <div class="ec-trend" style="color:var(--lime)">↑ +1%</div>
+            </div>
+          </div>
+
+          <!-- El. 11 -->
+          <div class="elemen-card ec-yellow" onclick="showElDetail(11)">
+            <div class="ec-num">El. 11</div>
+            <div class="ec-name">Manajemen Perubahan</div>
+            <div class="ec-score" style="color:var(--yel)">72<span style="font-size:14px">%</span></div>
+            <div class="ec-bar-bg"><div class="ec-bar-fill" style="width:72%;background:var(--yel)"></div></div>
+            <div class="ec-footer">
+              <div class="ec-finding" style="color:var(--mute)">0 finding</div>
+              <div class="ec-trend" style="color:var(--lime)">↑ +2%</div>
+            </div>
+          </div>
+
+          <!-- El. 12 -->
+          <div class="elemen-card ec-green" onclick="showElDetail(12)">
+            <div class="ec-num">El. 12</div>
+            <div class="ec-name">Cara Kerja Aman</div>
+            <div class="ec-score" style="color:var(--lime)">91<span style="font-size:14px">%</span></div>
+            <div class="ec-bar-bg"><div class="ec-bar-fill" style="width:91%;background:var(--lime)"></div></div>
+            <div class="ec-footer">
+              <div class="ec-finding" style="color:var(--mute)">0 finding</div>
+              <div class="ec-trend" style="color:var(--lime)">↑ +3%</div>
+            </div>
+          </div>
+
+          <!-- El. 13 -->
+          <div class="elemen-card ec-red" onclick="showElDetail(13)">
+            <div class="ec-num">El. 13</div>
+            <div class="ec-name">Rencana Tanggap Darurat</div>
+            <div class="ec-score" style="color:var(--red)">58<span style="font-size:14px">%</span></div>
+            <div class="ec-bar-bg"><div class="ec-bar-fill" style="width:58%;background:var(--red)"></div></div>
+            <div class="ec-footer">
+              <div class="ec-finding" style="color:var(--red)">⚑ 2 finding</div>
+              <div class="ec-trend" style="color:var(--red)">↓ -3%</div>
+            </div>
+          </div>
+
+          <!-- El. 14 -->
+          <div class="elemen-card ec-green" onclick="showElDetail(14)">
+            <div class="ec-num">El. 14</div>
+            <div class="ec-name">Pelaksanaan Operasi</div>
+            <div class="ec-score" style="color:var(--lime)">89<span style="font-size:14px">%</span></div>
+            <div class="ec-bar-bg"><div class="ec-bar-fill" style="width:89%;background:var(--lime)"></div></div>
+            <div class="ec-footer">
+              <div class="ec-finding" style="color:var(--mute)">0 finding</div>
+              <div class="ec-trend" style="color:var(--lime)">↑ +1%</div>
+            </div>
+          </div>
+
+          <!-- El. 15 -->
+          <div class="elemen-card ec-orange" onclick="showElDetail(15)">
+            <div class="ec-num">El. 15</div>
+            <div class="ec-name">Manajemen Kinerja Keselamatan Proses</div>
+            <div class="ec-score" style="color:var(--org)">65<span style="font-size:14px">%</span></div>
+            <div class="ec-bar-bg"><div class="ec-bar-fill" style="width:65%;background:var(--org)"></div></div>
+            <div class="ec-footer">
+              <div class="ec-finding" style="color:var(--red)">⚑ 1 finding</div>
+              <div class="ec-trend" style="color:var(--red)">↓ -1%</div>
+            </div>
+          </div>
+
+          <!-- El. 16 -->
+          <div class="elemen-card ec-green" onclick="showElDetail(16)">
+            <div class="ec-num">El. 16</div>
+            <div class="ec-name">Belajar dari Kejadian</div>
+            <div class="ec-score" style="color:var(--lime)">80<span style="font-size:14px">%</span></div>
+            <div class="ec-bar-bg"><div class="ec-bar-fill" style="width:80%;background:var(--lime)"></div></div>
+            <div class="ec-footer">
+              <div class="ec-finding" style="color:var(--mute)">0 finding</div>
+              <div class="ec-trend" style="color:var(--lime)">↑ +4%</div>
+            </div>
+          </div>
+
+          <!-- El. 17 -->
+          <div class="elemen-card ec-green" onclick="showElDetail(17)">
+            <div class="ec-num">El. 17</div>
+            <div class="ec-name">Audit</div>
+            <div class="ec-score" style="color:var(--lime)">83<span style="font-size:14px">%</span></div>
+            <div class="ec-bar-bg"><div class="ec-bar-fill" style="width:83%;background:var(--lime)"></div></div>
+            <div class="ec-footer">
+              <div class="ec-finding" style="color:var(--mute)">0 finding</div>
+              <div class="ec-trend" style="color:var(--teal)">→ 0%</div>
+            </div>
+          </div>
+
+          <!-- El. 18 -->
+          <div class="elemen-card ec-green" onclick="showElDetail(18)">
+            <div class="ec-num">El. 18</div>
+            <div class="ec-name">Tinjauan Manajemen</div>
+            <div class="ec-score" style="color:var(--lime)">90<span style="font-size:14px">%</span></div>
+            <div class="ec-bar-bg"><div class="ec-bar-fill" style="width:90%;background:var(--lime)"></div></div>
+            <div class="ec-footer">
+              <div class="ec-finding" style="color:var(--mute)">0 finding</div>
+              <div class="ec-trend" style="color:var(--lime)">↑ +2%</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- DETAIL COMPLIANCE BARS + PARETO -->
+        <div class="g32">
+
+          <!-- Full compliance bar list -->
+          <div class="panel">
+            <div class="ph">
+              <div class="pt">📊 Compliance Score — Semua 18 Elemen</div>
+              <div class="pa">Export →</div>
+            </div>
+            <div class="pb">
+              <div class="cr"><div class="cl">1 · Kepemimpinan & Akuntabilitas</div><div class="cb"><div class="cf" style="width:95%;background:var(--lime)"></div></div><div class="cv" style="color:var(--lime)">95%</div></div>
+              <div class="cr"><div class="cl">2 · Kebijakan PSAIMS</div><div class="cb"><div class="cf" style="width:92%;background:var(--lime)"></div></div><div class="cv" style="color:var(--lime)">92%</div></div>
+              <div class="cr"><div class="cl">3 · Kepatuhan Regulasi</div><div class="cb"><div class="cf" style="width:88%;background:var(--lime)"></div></div><div class="cv" style="color:var(--lime)">88%</div></div>
+              <div class="cr"><div class="cl">4 · Organisasi & Kompetensi</div><div class="cb"><div class="cf" style="width:86%;background:var(--lime)"></div></div><div class="cv" style="color:var(--lime)">86%</div></div>
+              <div class="cr"><div class="cl">5 · Keselamatan Kontraktor</div><div class="cb"><div class="cf" style="width:84%;background:var(--lime)"></div></div><div class="cv" style="color:var(--lime)">84%</div></div>
+              <div class="cr"><div class="cl">6 · Informasi Keselamatan</div><div class="cb"><div class="cf" style="width:92%;background:var(--lime)"></div></div><div class="cv" style="color:var(--lime)">92%</div></div>
+              <div class="cr"><div class="cl">7 · Analisis Bahaya Proses</div><div class="cb"><div class="cf" style="width:78%;background:var(--yel)"></div></div><div class="cv" style="color:var(--yel)">78%</div></div>
+              <div class="cr"><div class="cl">8 · Prosedur Operasi ⚑</div><div class="cb"><div class="cf" style="width:55%;background:var(--red)"></div></div><div class="cv" style="color:var(--red)">55%</div></div>
+              <div class="cr"><div class="cl">9 · Kesiapan Operasi / PSSR</div><div class="cb"><div class="cf" style="width:72%;background:var(--yel)"></div></div><div class="cv" style="color:var(--yel)">72%</div></div>
+              <div class="cr"><div class="cl">10 · Integritas Aset</div><div class="cb"><div class="cf" style="width:78%;background:var(--yel)"></div></div><div class="cv" style="color:var(--yel)">78%</div></div>
+              <div class="cr"><div class="cl">11 · Manajemen Perubahan</div><div class="cb"><div class="cf" style="width:72%;background:var(--yel)"></div></div><div class="cv" style="color:var(--yel)">72%</div></div>
+              <div class="cr"><div class="cl">12 · Cara Kerja Aman</div><div class="cb"><div class="cf" style="width:91%;background:var(--lime)"></div></div><div class="cv" style="color:var(--lime)">91%</div></div>
+              <div class="cr"><div class="cl">13 · Rencana Tanggap Darurat ⚑</div><div class="cb"><div class="cf" style="width:58%;background:var(--red)"></div></div><div class="cv" style="color:var(--red)">58%</div></div>
+              <div class="cr"><div class="cl">14 · Pelaksanaan Operasi</div><div class="cb"><div class="cf" style="width:89%;background:var(--lime)"></div></div><div class="cv" style="color:var(--lime)">89%</div></div>
+              <div class="cr"><div class="cl">15 · Kinerja PS ⚑</div><div class="cb"><div class="cf" style="width:65%;background:var(--org)"></div></div><div class="cv" style="color:var(--org)">65%</div></div>
+              <div class="cr"><div class="cl">16 · Belajar dari Kejadian</div><div class="cb"><div class="cf" style="width:80%;background:var(--lime)"></div></div><div class="cv" style="color:var(--lime)">80%</div></div>
+              <div class="cr"><div class="cl">17 · Audit</div><div class="cb"><div class="cf" style="width:83%;background:var(--lime)"></div></div><div class="cv" style="color:var(--lime)">83%</div></div>
+              <div class="cr"><div class="cl">18 · Tinjauan Manajemen</div><div class="cb"><div class="cf" style="width:90%;background:var(--lime)"></div></div><div class="cv" style="color:var(--lime)">90%</div></div>
+            </div>
+          </div>
+
+          <!-- Pareto + Activity -->
+          <div style="display:flex;flex-direction:column;gap:12px">
+
+            <!-- Pareto finding by elemen -->
+            <div class="panel">
+              <div class="ph"><div class="pt">⚑ Finding per Elemen</div></div>
+              <div class="pb">
+                <div class="pareto-row"><div class="pareto-lbl">8 · Prosedur Operasi</div><div class="pareto-bg"><div class="pareto-fill" style="width:100%;background:var(--red)"><span>2 NC</span></div></div><div class="pareto-cnt">2</div></div>
+                <div class="pareto-row"><div class="pareto-lbl">13 · Tanggap Darurat</div><div class="pareto-bg"><div class="pareto-fill" style="width:100%;background:var(--red)"><span>2 NC</span></div></div><div class="pareto-cnt">2</div></div>
+                <div class="pareto-row"><div class="pareto-lbl">7 · Analisis Bahaya</div><div class="pareto-bg"><div class="pareto-fill" style="width:50%;background:var(--yel)"><span>1 OBS</span></div></div><div class="pareto-cnt">1</div></div>
+                <div class="pareto-row"><div class="pareto-lbl">9 · Kesiapan / PSSR</div><div class="pareto-bg"><div class="pareto-fill" style="width:50%;background:var(--yel)"><span>1 OBS</span></div></div><div class="pareto-cnt">1</div></div>
+                <div class="pareto-row"><div class="pareto-lbl">15 · Kinerja PS</div><div class="pareto-bg"><div class="pareto-fill" style="width:50%;background:var(--org)"><span>1 OFI</span></div></div><div class="pareto-cnt">1</div></div>
+              </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="panel">
+              <div class="ph"><div class="pt">⟳ Recent Activity</div><div class="pa">Log →</div></div>
+              <div class="pb" style="padding:6px 13px">
+                <div class="ai"><div class="aln"><div class="adot" style="background:var(--red)"></div><div class="aconn"></div></div><div class="ac"><div class="at">Finding El.8 — Prosedur tidak update</div><div class="am">NC · Due: 28 Feb · Lead Ops</div></div><div class="ats">2j lalu</div></div>
+                <div class="ai"><div class="aln"><div class="adot" style="background:var(--red)"></div><div class="aconn"></div></div><div class="ac"><div class="at">Finding El.13 — ERP review overdue</div><div class="am">NC · Due: 30 Apr · HSE Supt.</div></div><div class="ats">Kemarin</div></div>
+                <div class="ai"><div class="aln"><div class="adot" style="background:var(--lime)"></div><div class="aconn"></div></div><div class="ac"><div class="at">El.12 Cara Kerja Aman naik ke 91%</div><div class="am">Audit Jan 2026 · +3% dari Q3</div></div><div class="ats">5 hr lalu</div></div>
+                <div class="ai"><div class="aln"><div class="adot" style="background:var(--audit)"></div></div><div class="ac"><div class="at">Audit PSAIMS Q1 2026 dijadwalkan</div><div class="am">15 Mar 2026 · Semua 18 elemen</div></div><div class="ats">3 hr lalu</div></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div><!-- /page-elemen -->
+
+      <!-- ══════════════════════════════
+           PAGE: AUDIT FINDING
+      ══════════════════════════════ -->
+      <div class="page" id="page-finding">
+
+        <div class="sec-lbl"><div class="sdot" style="background:var(--red)"></div>Audit Finding Register</div>
+        <div class="kpi-row kpi-4" style="margin-bottom:14px">
+          <div class="kc"><div class="kc-top" style="background:var(--red)"></div><span class="kc-ico">⚑</span><div class="kc-val" style="color:var(--red)">5</div><div class="kc-lbl">Total Open Finding</div><div class="kc-sub" style="color:var(--dim)">Audit Jan 2026</div></div>
+          <div class="kc"><div class="kc-top" style="background:var(--red)"></div><span class="kc-ico">🚨</span><div class="kc-val" style="color:var(--red)">4</div><div class="kc-lbl">Non-Conformance (NC)</div><div class="kc-sub" style="color:var(--red)">Wajib diselesaikan</div></div>
+          <div class="kc"><div class="kc-top" style="background:var(--yel)"></div><span class="kc-ico">👁</span><div class="kc-val" style="color:var(--yel)">2</div><div class="kc-lbl">Observation (OBS)</div><div class="kc-sub" style="color:var(--yel)">Perlu diperhatikan</div></div>
+          <div class="kc"><div class="kc-top" style="background:var(--blue)"></div><span class="kc-ico">💡</span><div class="kc-val" style="color:var(--blue)">1</div><div class="kc-lbl">Opp. for Improvement</div><div class="kc-sub" style="color:var(--blue)">Rekomendasi</div></div>
+        </div>
+
+        <div class="g32">
+
+          <!-- Finding table -->
+          <div class="panel">
+            <div class="ph">
+              <div class="pt">⚑ Audit Finding Register <span class="ptag b-r">5 OPEN</span></div>
+              <div class="pa">+ New Finding →</div>
+            </div>
+            <table class="dt">
+              <thead>
+                <tr><th>Finding ID</th><th>Elemen</th><th>Deskripsi Finding</th><th>Tipe</th><th>Sumber</th><th>PIC</th><th>Due Date</th><th>Evidence</th><th>Status</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-family:monospace;font-size:10px;color:var(--audit)">AF-2026-001</td>
+                  <td><span class="badge b-d">El. 08</span></td>
+                  <td class="hi">SOP operasi pressure letdown belum direvisi pasca modifikasi 2024</td>
+                  <td><span class="b-nc badge">NC</span></td>
+                  <td style="font-size:10px">Internal Audit</td>
+                  <td style="font-size:10.5px">Lead Ops</td>
+                  <td style="font-family:monospace;font-size:10px;color:var(--red)">28 Feb 2026</td>
+                  <td><span class="badge b-d">0 file</span></td>
+                  <td><span class="badge b-r">OPEN</span></td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-size:10px;color:var(--audit)">AF-2026-002</td>
+                  <td><span class="badge b-d">El. 08</span></td>
+                  <td class="hi">Prosedur PSSR belum mencakup skenario kegagalan ESDV-001</td>
+                  <td><span class="b-nc badge">NC</span></td>
+                  <td style="font-size:10px">Internal Audit</td>
+                  <td style="font-size:10.5px">PS Engineer</td>
+                  <td style="font-family:monospace;font-size:10px;color:var(--red)">05 Mar 2026</td>
+                  <td><span class="badge b-d">0 file</span></td>
+                  <td><span class="badge b-r">OPEN</span></td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-size:10px;color:var(--audit)">AF-2026-003</td>
+                  <td><span class="badge b-d">El. 13</span></td>
+                  <td class="hi">Emergency Response Plan (ERP) belum diperbarui sejak Desember 2023</td>
+                  <td><span class="b-nc badge">NC</span></td>
+                  <td style="font-size:10px">Internal Audit</td>
+                  <td style="font-size:10.5px">HSE Supt.</td>
+                  <td style="font-family:monospace;font-size:10px;color:var(--yel)">30 Apr 2026</td>
+                  <td><span class="badge b-d">1 file</span></td>
+                  <td><span class="badge b-y">PROGRESS</span></td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-size:10px;color:var(--audit)">AF-2026-004</td>
+                  <td><span class="badge b-d">El. 13</span></td>
+                  <td class="hi">Emergency drill tidak dilaksanakan sesuai jadwal Q4 2025</td>
+                  <td><span class="b-nc badge">NC</span></td>
+                  <td style="font-size:10px">Internal Audit</td>
+                  <td style="font-size:10.5px">HSE Coord.</td>
+                  <td style="font-family:monospace;font-size:10px;color:var(--yel)">20 Mar 2026</td>
+                  <td><span class="badge b-d">0 file</span></td>
+                  <td><span class="badge b-r">OPEN</span></td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-size:10px;color:var(--audit)">AF-2026-005</td>
+                  <td><span class="badge b-d">El. 07</span></td>
+                  <td class="hi">Action item HAZOP 2023 item #14 dan #17 belum ditutup</td>
+                  <td><span class="b-obs badge">OBS</span></td>
+                  <td style="font-size:10px">Internal Audit</td>
+                  <td style="font-size:10.5px">PS Engineer</td>
+                  <td style="font-family:monospace;font-size:10px;color:var(--yel)">15 Mar 2026</td>
+                  <td><span class="badge b-d">2 file</span></td>
+                  <td><span class="badge b-y">PROGRESS</span></td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-size:10px;color:var(--audit)">AF-2026-006</td>
+                  <td><span class="badge b-d">El. 09</span></td>
+                  <td class="hi">Checklist PSSR tidak mencakup verifikasi SECE untuk unit baru</td>
+                  <td><span class="b-obs badge">OBS</span></td>
+                  <td style="font-size:10px">Internal Audit</td>
+                  <td style="font-size:10.5px">Insp. Engineer</td>
+                  <td style="font-family:monospace;font-size:10px;color:var(--yel)">01 Apr 2026</td>
+                  <td><span class="badge b-d">0 file</span></td>
+                  <td><span class="badge b-r">OPEN</span></td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-size:10px;color:var(--audit)">AF-2026-007</td>
+                  <td><span class="badge b-d">El. 15</span></td>
+                  <td class="hi">KPI PSAIMS belum dilaporkan ke management setiap kuartal secara konsisten</td>
+                  <td><span class="badge b-b">OFI</span></td>
+                  <td style="font-size:10px">Internal Audit</td>
+                  <td style="font-size:10.5px">PS Manager</td>
+                  <td style="font-family:monospace;font-size:10px;color:var(--blue)">31 Mar 2026</td>
+                  <td><span class="badge b-d">0 file</span></td>
+                  <td><span class="badge b-o">REVIEW</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Finding Detail Cards + Activity -->
+          <div style="display:flex;flex-direction:column;gap:12px">
+
+            <!-- Finding Priority -->
+            <div class="panel">
+              <div class="ph"><div class="pt">🚨 Critical Finding — Immediate Action</div></div>
+              <div class="pb" style="padding:8px 13px">
+
+                <div class="finding-card" style="border-color:rgba(232,80,80,.3)">
+                  <div class="fc-top">
+                    <div class="fc-id">AF-2026-001</div>
+                    <div class="fc-title">SOP Pressure Letdown Belum Direvisi</div>
+                    <span class="b-nc badge">NC</span>
+                  </div>
+                  <div class="fc-body">SOP revisi pasca modifikasi P&ID 2024 belum dilakukan. Operasi menggunakan prosedur lama yang tidak akurat.</div>
+                  <div class="fc-footer">
+                    <span style="color:var(--red);font-weight:700">El.08 Prosedur Operasi</span>
+                    <span>Due: <strong style="color:var(--red)">28 Feb 2026</strong></span>
+                    <span>PIC: Lead Ops</span>
+                    <span class="badge b-r">OVERDUE RISK</span>
+                  </div>
+                </div>
+
+                <div class="finding-card" style="border-color:rgba(232,80,80,.3)">
+                  <div class="fc-top">
+                    <div class="fc-id">AF-2026-003</div>
+                    <div class="fc-title">ERP Belum Diperbarui (>2 Tahun)</div>
+                    <span class="b-nc badge">NC</span>
+                  </div>
+                  <div class="fc-body">Emergency Response Plan terakhir direvisi Desember 2023. Tidak mencakup konfigurasi fasilitas terkini dan jalur evakuasi baru.</div>
+                  <div class="fc-footer">
+                    <span style="color:var(--red);font-weight:700">El.13 Tanggap Darurat</span>
+                    <span>Due: <strong style="color:var(--yel)">30 Apr 2026</strong></span>
+                    <span>PIC: HSE Supt.</span>
+                    <span class="badge b-y">IN PROGRESS</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Corrective Action Tracker -->
+            <div class="panel">
+              <div class="ph"><div class="pt">✅ Corrective Action Tracker</div></div>
+              <div class="pb" style="padding:6px 13px">
+                <div class="sr">
+                  <div class="sr-l"><div class="sr-name">AF-001 — Revisi SOP</div><div class="sr-sub">El.08 · Due 28 Feb · Lead Ops</div></div>
+                  <div class="sr-r">
+                    <div style="width:60px;height:5px;background:var(--mid);border-radius:2px;overflow:hidden"><div style="width:0%;height:100%;background:var(--red);border-radius:2px"></div></div>
+                    <span class="badge b-r">0%</span>
+                  </div>
+                </div>
+                <div class="sr">
+                  <div class="sr-l"><div class="sr-name">AF-003 — Update ERP</div><div class="sr-sub">El.13 · Due 30 Apr · HSE Supt.</div></div>
+                  <div class="sr-r">
+                    <div style="width:60px;height:5px;background:var(--mid);border-radius:2px;overflow:hidden"><div style="width:40%;height:100%;background:var(--yel);border-radius:2px"></div></div>
+                    <span class="badge b-y">40%</span>
+                  </div>
+                </div>
+                <div class="sr">
+                  <div class="sr-l"><div class="sr-name">AF-005 — Tutup HAZOP AI</div><div class="sr-sub">El.07 · Due 15 Mar · PS Eng.</div></div>
+                  <div class="sr-r">
+                    <div style="width:60px;height:5px;background:var(--mid);border-radius:2px;overflow:hidden"><div style="width:60%;height:100%;background:var(--yel);border-radius:2px"></div></div>
+                    <span class="badge b-y">60%</span>
+                  </div>
+                </div>
+                <div class="sr">
+                  <div class="sr-l"><div class="sr-name">AF-004 — Emergency Drill</div><div class="sr-sub">El.13 · Due 20 Mar · HSE Coord.</div></div>
+                  <div class="sr-r">
+                    <div style="width:60px;height:5px;background:var(--mid);border-radius:2px;overflow:hidden"><div style="width:10%;height:100%;background:var(--org);border-radius:2px"></div></div>
+                    <span class="badge b-o">10%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div><!-- /page-finding -->
+
+      <!-- ══════════════════════════════
+           PAGE: JADWAL AUDIT
+      ══════════════════════════════ -->
+      <div class="page" id="page-schedule">
+
+        <div class="sec-lbl"><div class="sdot" style="background:var(--blue)"></div>Jadwal Audit PSAIMS 2026</div>
+        <div class="kpi-row kpi-4" style="margin-bottom:14px">
+          <div class="kc"><div class="kc-top" style="background:var(--lime)"></div><span class="kc-ico">✅</span><div class="kc-val" style="color:var(--lime)">1</div><div class="kc-lbl">Audit Selesai</div><div class="kc-sub" style="color:var(--lime)">Jan 2026 — Done</div></div>
+          <div class="kc"><div class="kc-top" style="background:var(--blue)"></div><span class="kc-ico">📅</span><div class="kc-val" style="color:var(--blue)">3</div><div class="kc-lbl">Audit Dijadwalkan</div><div class="kc-sub" style="color:var(--blue)">Q1–Q4 2026</div></div>
+          <div class="kc"><div class="kc-top" style="background:var(--yel)"></div><span class="kc-ico">⏰</span><div class="kc-val" style="color:var(--yel)">1</div><div class="kc-lbl">Dalam 30 Hari</div><div class="kc-sub" style="color:var(--yel)">15 Mar 2026</div></div>
+          <div class="kc"><div class="kc-top" style="background:var(--teal)"></div><span class="kc-ico">📊</span><div class="kc-val" style="color:var(--teal)">18</div><div class="kc-lbl">Elemen per Audit</div><div class="kc-sub" style="color:var(--teal)">Full coverage</div></div>
+        </div>
+
+        <!-- Gantt-style audit plan -->
+        <div class="panel" style="margin-bottom:12px">
+          <div class="ph">
+            <div class="pt">📅 Audit Plan 2026 — Gantt View</div>
+            <div class="pa">Edit →</div>
+          </div>
+          <!-- Header months -->
+          <div class="apt-header">
+            <div class="apt-label-col">Elemen / Audit</div>
+            <div class="apt-months">
+              <div class="apt-mon">Jan</div><div class="apt-mon">Feb</div><div class="apt-mon">Mar</div>
+              <div class="apt-mon">Apr</div><div class="apt-mon">Mei</div><div class="apt-mon">Jun</div>
+              <div class="apt-mon">Jul</div><div class="apt-mon">Ags</div><div class="apt-mon">Sep</div>
+              <div class="apt-mon">Okt</div><div class="apt-mon">Nov</div><div class="apt-mon">Des</div>
+            </div>
+          </div>
+          <!-- Rows -->
+          <div class="apt-row">
+            <div class="apt-name">Audit Internal Q1 (18 El.)</div>
+            <div class="apt-bar-area">
+              <div></div><div></div>
+              <div class="apt-bar apt-plan">Q1</div>
+              <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+            </div>
+          </div>
+          <div class="apt-row">
+            <div class="apt-name">Audit Internal Q2 (18 El.)</div>
+            <div class="apt-bar-area">
+              <div></div><div></div><div></div><div></div><div></div>
+              <div class="apt-bar apt-plan">Q2</div>
+              <div></div><div></div><div></div><div></div><div></div><div></div>
+            </div>
+          </div>
+          <div class="apt-row">
+            <div class="apt-name">Audit Internal Q3 (18 El.)</div>
+            <div class="apt-bar-area">
+              <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+              <div class="apt-bar apt-plan">Q3</div>
+              <div></div><div></div><div></div>
+            </div>
+          </div>
+          <div class="apt-row">
+            <div class="apt-name">Audit Internal Q4 (18 El.)</div>
+            <div class="apt-bar-area">
+              <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+              <div class="apt-bar apt-plan">Q4</div>
+            </div>
+          </div>
+          <div class="apt-row" style="background:rgba(168,214,54,.03)">
+            <div class="apt-name" style="color:var(--lime)">✅ Audit Q1 Jan (SELESAI)</div>
+            <div class="apt-bar-area">
+              <div class="apt-bar apt-done">✓</div>
+              <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+            </div>
+          </div>
+          <div class="apt-row">
+            <div class="apt-name">Tinjauan Manajemen (Sem. 1)</div>
+            <div class="apt-bar-area">
+              <div></div><div></div><div></div><div></div><div></div>
+              <div class="apt-bar apt-plan">TM</div>
+              <div></div><div></div><div></div><div></div><div></div><div></div>
+            </div>
+          </div>
+          <div class="apt-row">
+            <div class="apt-name">Tinjauan Manajemen (Sem. 2)</div>
+            <div class="apt-bar-area">
+              <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+              <div class="apt-bar apt-plan">TM</div>
+            </div>
+          </div>
+          <div class="apt-row">
+            <div class="apt-name">Audit Eksternal / Regulator</div>
+            <div class="apt-bar-area">
+              <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+              <div class="apt-bar" style="background:rgba(232,80,138,.2);border:1px solid rgba(232,80,138,.4);color:var(--pink)">EXT</div>
+              <div></div><div></div><div></div><div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Schedule detail table -->
+        <div class="g2">
+          <div class="panel">
+            <div class="ph"><div class="pt">📋 Upcoming Audit Schedule</div><div class="pa">+ Tambah →</div></div>
+            <div class="pb" style="padding:8px 13px">
+              <div class="si">
+                <div class="sd" style="background:rgba(74,158,232,.15);color:var(--blue)"><div class="d">15</div><div class="m">MAR</div></div>
+                <div class="sin"><div class="sn">Audit Internal Q1 2026 — Semua 18 Elemen</div><div class="ss">Lead Auditor: Ahmad Muhar · 3 Hari</div></div>
+                <span class="badge b-b">Upcoming</span>
+              </div>
+              <div class="si">
+                <div class="sd" style="background:rgba(46,196,182,.12);color:var(--teal)"><div class="d">15</div><div class="m">JUN</div></div>
+                <div class="sin"><div class="sn">Audit Internal Q2 2026 + Tinjauan Manajemen</div><div class="ss">Lead Auditor: TBD · 3 Hari</div></div>
+                <span class="badge b-t">Planned</span>
+              </div>
+              <div class="si">
+                <div class="sd" style="background:rgba(232,80,138,.12);color:var(--pink)"><div class="d">10</div><div class="m">AGS</div></div>
+                <div class="sin"><div class="sn">Audit Eksternal / SKK Migas / Regulator</div><div class="ss">External Auditor · Durasi TBD</div></div>
+                <span class="badge b-pk" style="background:rgba(232,80,138,.14);color:var(--pink);border:1px solid rgba(232,80,138,.3)">External</span>
+              </div>
+              <div class="si">
+                <div class="sd" style="background:rgba(168,214,54,.1);color:var(--lime)"><div class="d">12</div><div class="m">SEP</div></div>
+                <div class="sin"><div class="sn">Audit Internal Q3 2026 — Semua 18 Elemen</div><div class="ss">Lead Auditor: TBD · 3 Hari</div></div>
+                <span class="badge b-g">Planned</span>
+              </div>
+              <div class="si">
+                <div class="sd" style="background:rgba(139,92,246,.1);color:var(--pur)"><div class="d">10</div><div class="m">DES</div></div>
+                <div class="sin"><div class="sn">Audit Internal Q4 + Tinjauan Manajemen Akhir Tahun</div><div class="ss">Lead Auditor: TBD · 3 Hari</div></div>
+                <span class="badge b-p">Planned</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="ph"><div class="pt">👥 Audit Team</div><div class="pa">Edit →</div></div>
+            <div class="pb" style="padding:8px 13px">
+              <div class="sr">
+                <div class="sr-l"><div class="sr-name">Ahmad Muhar</div><div class="sr-sub">Lead Auditor · PS Engineer</div></div>
+                <span class="badge b-a">Lead</span>
+              </div>
+              <div class="sr">
+                <div class="sr-l"><div class="sr-name">Hendra Setiawan</div><div class="sr-sub">Co-Auditor · HSE Superintendent</div></div>
+                <span class="badge b-b">Co-Audit</span>
+              </div>
+              <div class="sr">
+                <div class="sr-l"><div class="sr-name">Rini Kusuma</div><div class="sr-sub">Auditor · Operations Lead</div></div>
+                <span class="badge b-b">Auditor</span>
+              </div>
+              <div class="sr">
+                <div class="sr-l"><div class="sr-name">Dr. Budi Santoso</div><div class="sr-sub">External Expert · Regulator Rep.</div></div>
+                <span class="badge b-p">External</span>
+              </div>
+              <div class="sr">
+                <div class="sr-l"><div class="sr-name">Dewi Pratiwi</div><div class="sr-sub">Document Controller · Admin Support</div></div>
+                <span class="badge b-d">Support</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /page-schedule -->
+
+      <!-- ══════════════════════════════
+           PAGE: OVERVIEW DASHBOARD
+      ══════════════════════════════ -->
+      <div class="page" id="page-overview">
+
+        <div class="sec-lbl"><div class="sdot" style="background:var(--audit)"></div>Audit & Monitoring — Overview Dashboard</div>
+        <div class="kpi-row kpi-6" style="margin-bottom:14px">
+          <div class="kc"><div class="kc-top" style="background:var(--audit)"></div><span class="kc-ico">📊</span><div class="kc-val" style="color:var(--audit)">87%</div><div class="kc-lbl">Overall PSAIMS Score</div><div class="kc-sub" style="color:var(--lime)">Target 90%</div></div>
+          <div class="kc"><div class="kc-top" style="background:var(--lime)"></div><span class="kc-ico">✅</span><div class="kc-val" style="color:var(--lime)">12</div><div class="kc-lbl">Elemen Baik ≥80%</div><div class="kc-sub" style="color:var(--lime)">dari 18 elemen</div></div>
+          <div class="kc"><div class="kc-top" style="background:var(--red)"></div><span class="kc-ico">⚑</span><div class="kc-val" style="color:var(--red)">5</div><div class="kc-lbl">Open Finding</div><div class="kc-sub" style="color:var(--red)">4 NC · 1 OFI</div></div>
+          <div class="kc"><div class="kc-top" style="background:var(--blue)"></div><span class="kc-ico">📅</span><div class="kc-val" style="color:var(--blue)">15 Mar</div><div class="kc-lbl">Audit Q1 Berikutnya</div><div class="kc-sub" style="color:var(--blue)">19 hari lagi</div></div>
+          <div class="kc"><div class="kc-top" style="background:var(--yel)"></div><span class="kc-ico">⏳</span><div class="kc-val" style="color:var(--yel)">40%</div><div class="kc-lbl">CAR Completion</div><div class="kc-sub" style="color:var(--yel)">2 dari 5 resolved</div></div>
+          <div class="kc"><div class="kc-top" style="background:var(--teal)"></div><span class="kc-ico">📈</span><div class="kc-val" style="color:var(--teal)">+3%</div><div class="kc-lbl">Trend vs Q3 2025</div><div class="kc-sub" style="color:var(--teal)">Naik dari 84%</div></div>
+        </div>
+
+        <div class="g3">
+
+          <!-- Top 5 Elemen terbaik + terburuk -->
+          <div class="panel">
+            <div class="ph"><div class="pt">🏆 Top 5 Elemen Terbaik</div></div>
+            <div class="pb" style="padding:6px 13px">
+              <div class="cr"><div class="cl">El.01 · Kepemimpinan</div><div class="cb"><div class="cf" style="width:95%;background:var(--lime)"></div></div><div class="cv" style="color:var(--lime)">95%</div></div>
+              <div class="cr"><div class="cl">El.02 · Kebijakan PSAIMS</div><div class="cb"><div class="cf" style="width:92%;background:var(--lime)"></div></div><div class="cv" style="color:var(--lime)">92%</div></div>
+              <div class="cr"><div class="cl">El.06 · Info Keselamatan</div><div class="cb"><div class="cf" style="width:92%;background:var(--lime)"></div></div><div class="cv" style="color:var(--lime)">92%</div></div>
+              <div class="cr"><div class="cl">El.12 · Cara Kerja Aman</div><div class="cb"><div class="cf" style="width:91%;background:var(--lime)"></div></div><div class="cv" style="color:var(--lime)">91%</div></div>
+              <div class="cr"><div class="cl">El.18 · Tinjauan Mgt.</div><div class="cb"><div class="cf" style="width:90%;background:var(--lime)"></div></div><div class="cv" style="color:var(--lime)">90%</div></div>
+            </div>
+            <div class="ph" style="margin-top:0;border-top:1px solid var(--border)"><div class="pt" style="color:var(--red)">⚠ 5 Elemen Perlu Perhatian</div></div>
+            <div class="pb" style="padding:6px 13px">
+              <div class="cr"><div class="cl">El.08 · Prosedur Operasi</div><div class="cb"><div class="cf" style="width:55%;background:var(--red)"></div></div><div class="cv" style="color:var(--red)">55%</div></div>
+              <div class="cr"><div class="cl">El.13 · Tanggap Darurat</div><div class="cb"><div class="cf" style="width:58%;background:var(--red)"></div></div><div class="cv" style="color:var(--red)">58%</div></div>
+              <div class="cr"><div class="cl">El.15 · Kinerja PS</div><div class="cb"><div class="cf" style="width:65%;background:var(--org)"></div></div><div class="cv" style="color:var(--org)">65%</div></div>
+              <div class="cr"><div class="cl">El.11 · Mgmt. Perubahan</div><div class="cb"><div class="cf" style="width:72%;background:var(--yel)"></div></div><div class="cv" style="color:var(--yel)">72%</div></div>
+              <div class="cr"><div class="cl">El.09 · PSSR</div><div class="cb"><div class="cf" style="width:72%;background:var(--yel)"></div></div><div class="cv" style="color:var(--yel)">72%</div></div>
+            </div>
+          </div>
+
+          <!-- Quarterly Trend -->
+          <div class="panel">
+            <div class="ph"><div class="pt">📈 Trend Compliance per Kuartal</div></div>
+            <div class="pb">
+              <div style="display:flex;align-items:flex-end;gap:12px;height:100px;padding:0 4px;margin-bottom:8px">
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+                  <div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono',monospace">78%</div>
+                  <div style="flex:1;width:100%;background:rgba(232,192,64,.3);border-radius:4px 4px 0 0;min-height:20px;height:78%"></div>
+                  <div style="font-size:9px;color:var(--mute)">Q1'25</div>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+                  <div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono',monospace">81%</div>
+                  <div style="flex:1;width:100%;background:rgba(168,214,54,.3);border-radius:4px 4px 0 0;min-height:20px;height:81%"></div>
+                  <div style="font-size:9px;color:var(--mute)">Q2'25</div>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+                  <div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono',monospace">84%</div>
+                  <div style="flex:1;width:100%;background:rgba(168,214,54,.4);border-radius:4px 4px 0 0;min-height:20px;height:84%"></div>
+                  <div style="font-size:9px;color:var(--mute)">Q3'25</div>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+                  <div style="font-size:10px;color:var(--dim);font-family:'Share Tech Mono',monospace">85%</div>
+                  <div style="flex:1;width:100%;background:rgba(168,214,54,.45);border-radius:4px 4px 0 0;min-height:20px;height:85%"></div>
+                  <div style="font-size:9px;color:var(--mute)">Q4'25</div>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+                  <div style="font-size:11px;color:var(--lime);font-family:'Share Tech Mono',monospace;font-weight:700">87%</div>
+                  <div style="flex:1;width:100%;background:var(--lime);border-radius:4px 4px 0 0;opacity:.6;min-height:20px;height:87%"></div>
+                  <div style="font-size:9px;color:var(--audit);font-weight:700">Jan'26</div>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+                  <div style="font-size:10px;color:var(--mute);font-family:'Share Tech Mono',monospace">90%</div>
+                  <div style="flex:1;width:100%;background:rgba(46,196,182,.15);border:1px dashed rgba(46,196,182,.3);border-radius:4px 4px 0 0;min-height:20px;height:90%"></div>
+                  <div style="font-size:9px;color:var(--mute)">Target</div>
+                </div>
+              </div>
+              <div style="font-size:10px;color:var(--mute);text-align:center">Tren positif ↑ +9% dari Q1 2025 → Jan 2026</div>
+            </div>
+          </div>
+
+          <!-- Activity + Summary -->
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="panel">
+              <div class="ph"><div class="pt">⟳ Aktivitas Terbaru</div><div class="pa">Log →</div></div>
+              <div class="pb" style="padding:6px 13px">
+                <div class="ai"><div class="aln"><div class="adot" style="background:var(--audit)"></div><div class="aconn"></div></div><div class="ac"><div class="at">Audit Jan 2026 selesai</div><div class="am">87% overall · 5 finding terbuka</div></div><div class="ats">3 hr lalu</div></div>
+                <div class="ai"><div class="aln"><div class="adot" style="background:var(--red)"></div><div class="aconn"></div></div><div class="ac"><div class="at">AF-001 belum ada progress</div><div class="am">SOP P.Letdown · Due 28 Feb</div></div><div class="ats">1j lalu</div></div>
+                <div class="ai"><div class="aln"><div class="adot" style="background:var(--lime)"></div><div class="aconn"></div></div><div class="ac"><div class="at">El.12 Cara Kerja Aman 91%</div><div class="am">Naik +3% dari Q3 2025</div></div><div class="ats">Kemarin</div></div>
+                <div class="ai"><div class="aln"><div class="adot" style="background:var(--blue)"></div></div><div class="ac"><div class="at">Audit Q1 dijadwalkan 15 Mar</div><div class="am">Lead: Ahmad Muhar · 3 hari</div></div><div class="ats">2j lalu</div></div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="ph"><div class="pt">📌 Action Required</div></div>
+              <div class="pb" style="padding:6px 13px">
+                <div class="sr"><div class="sr-l"><div class="sr-name" style="color:var(--red)">⚠ Revisi SOP Pressure Letdown</div><div class="sr-sub">Due 28 Feb · Sangat mendesak</div></div><span class="badge b-r">KRITIS</span></div>
+                <div class="sr"><div class="sr-l"><div class="sr-name">Siapkan Audit Q1 — 15 Mar</div><div class="sr-sub">Semua 18 elemen · 19 hari lagi</div></div><span class="badge b-b">19 HARI</span></div>
+                <div class="sr"><div class="sr-l"><div class="sr-name">Update ERP Document</div><div class="sr-sub">Due 30 Apr · HSE Supt.</div></div><span class="badge b-y">PROGRESS</span></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div><!-- /page-overview -->
+
+      <!-- ══════════════════════════════
+           PAGE: TINJAUAN MANAJEMEN
+      ══════════════════════════════ -->
+      <div class="page" id="page-tinjauan">
+
+        <div class="sec-lbl"><div class="sdot" style="background:var(--pur)"></div>Tinjauan Manajemen — El. 18</div>
+        <div class="kpi-row kpi-4" style="margin-bottom:14px">
+          <div class="kc"><div class="kc-top" style="background:var(--pur)"></div><span class="kc-ico">👁</span><div class="kc-val" style="color:var(--pur)">2</div><div class="kc-lbl">Tinjauan 2026</div><div class="kc-sub" style="color:var(--dim)">Sem.1 & Sem.2</div></div>
+          <div class="kc"><div class="kc-top" style="background:var(--lime)"></div><span class="kc-ico">✅</span><div class="kc-val" style="color:var(--lime)">1</div><div class="kc-lbl">Selesai</div><div class="kc-sub" style="color:var(--lime)">Des 2025</div></div>
+          <div class="kc"><div class="kc-top" style="background:var(--blue)"></div><span class="kc-ico">📅</span><div class="kc-val" style="color:var(--blue)">Jun '26</div><div class="kc-lbl">Berikutnya</div><div class="kc-sub" style="color:var(--blue)">Tinjauan Sem.1</div></div>
+          <div class="kc"><div class="kc-top" style="background:var(--yel)"></div><span class="kc-ico">📋</span><div class="kc-val" style="color:var(--yel)">12</div><div class="kc-lbl">Action Item Open</div><div class="kc-sub" style="color:var(--yel)">Dari tinjauan Des'25</div></div>
+        </div>
+
+        <div class="g32">
+          <div class="panel">
+            <div class="ph"><div class="pt">📋 Riwayat Tinjauan Manajemen</div><div class="pa">+ Baru →</div></div>
+            <table class="dt">
+              <thead><tr><th>ID</th><th>Periode</th><th>Tanggal</th><th>Peserta</th><th>Topik Utama</th><th>Temuan</th><th>Action Items</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td style="font-family:monospace;font-size:10px;color:var(--pur)">TM-2025-02</td>
+                  <td class="hi">Semester 2 — 2025</td>
+                  <td style="font-family:monospace;font-size:10px">15 Des 2025</td>
+                  <td style="font-size:10px">GM, Dept. Heads, PS Mgr</td>
+                  <td style="font-size:10.5px">Review 18 elemen + KPI tahunan</td>
+                  <td style="font-family:monospace;font-size:11px;color:var(--yel)">3</td>
+                  <td style="font-family:monospace;font-size:11px;color:var(--yel)">12 open</td>
+                  <td><span class="badge b-y">In Progress</span></td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-size:10px;color:var(--pur)">TM-2025-01</td>
+                  <td class="hi">Semester 1 — 2025</td>
+                  <td style="font-family:monospace;font-size:10px">20 Jun 2025</td>
+                  <td style="font-size:10px">GM, Dept. Heads, PS Mgr</td>
+                  <td style="font-size:10.5px">Review KPI + Audit Q1-Q2 + Finding</td>
+                  <td style="font-family:monospace;font-size:11px;color:var(--lime)">5</td>
+                  <td style="font-family:monospace;font-size:11px;color:var(--lime)">Closed</td>
+                  <td><span class="badge b-g">Closed ✓</span></td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-size:10px;color:var(--pur)">TM-2024-02</td>
+                  <td class="hi">Semester 2 — 2024</td>
+                  <td style="font-family:monospace;font-size:10px">18 Des 2024</td>
+                  <td style="font-size:10px">GM, Dept. Heads, PS Mgr</td>
+                  <td style="font-size:10.5px">Review PSAIMS + Incident Review</td>
+                  <td style="font-family:monospace;font-size:11px;color:var(--lime)">2</td>
+                  <td style="font-family:monospace;font-size:11px;color:var(--lime)">Closed</td>
+                  <td><span class="badge b-g">Closed ✓</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="panel">
+              <div class="ph"><div class="pt">📌 Action Items — TM Des 2025</div></div>
+              <div class="pb" style="padding:6px 13px">
+                <div class="sr"><div class="sr-l"><div class="sr-name">Revisi 18 Elemen scope document</div><div class="sr-sub">PS Mgr · Due Mar 2026</div></div><span class="badge b-y">50%</span></div>
+                <div class="sr"><div class="sr-l"><div class="sr-name">Implementasi training PSAIMS awareness</div><div class="sr-sub">HR & Training · Due Apr 2026</div></div><span class="badge b-o">20%</span></div>
+                <div class="sr"><div class="sr-l"><div class="sr-name">Update target KPI PSAIMS 2026</div><div class="sr-sub">PS Mgr · Due Feb 2026</div></div><span class="badge b-g">Done ✓</span></div>
+                <div class="sr"><div class="sr-l"><div class="sr-name">Kick-off audit jadwal 2026</div><div class="sr-sub">Lead Auditor · Done Jan 2026</div></div><span class="badge b-g">Done ✓</span></div>
+                <div class="sr"><div class="sr-l"><div class="sr-name">Review kontraktor PSAIMS compliance</div><div class="sr-sub">HSE Supt. · Due Mar 2026</div></div><span class="badge b-r">0%</span></div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="ph"><div class="pt">📋 Agenda Tinjauan Jun 2026</div></div>
+              <div class="pb" style="padding:6px 13px">
+                <div class="sr"><div class="sr-l"><div class="sr-name">1. Review KPI PSAIMS Q1-Q2</div></div><span class="badge b-d">Agenda</span></div>
+                <div class="sr"><div class="sr-l"><div class="sr-name">2. Laporan Audit Internal Q1 & Q2</div></div><span class="badge b-d">Agenda</span></div>
+                <div class="sr"><div class="sr-l"><div class="sr-name">3. Status Audit Finding & CAR</div></div><span class="badge b-d">Agenda</span></div>
+                <div class="sr"><div class="sr-l"><div class="sr-name">4. Incident & Learning Review</div></div><span class="badge b-d">Agenda</span></div>
+                <div class="sr"><div class="sr-l"><div class="sr-name">5. Action Items dari TM Des 2025</div></div><span class="badge b-d">Agenda</span></div>
+                <div class="sr"><div class="sr-l"><div class="sr-name">6. Rencana H2 2026</div></div><span class="badge b-d">Agenda</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /page-tinjauan -->
+
+      <!-- PAGE: HISTORY (simple) -->
+      <div class="page" id="page-history">
+        <div class="sec-lbl"><div class="sdot" style="background:var(--dim)"></div>Riwayat Audit PSAIMS</div>
+        <div class="panel">
+          <div class="ph"><div class="pt">📁 Riwayat Audit — Semua</div><div class="pa">Export →</div></div>
+          <table class="dt">
+            <thead><tr><th>Audit ID</th><th>Periode</th><th>Tanggal Audit</th><th>Lead Auditor</th><th>Scope</th><th>Durasi</th><th>Score</th><th>Finding</th><th>Status Dokumen</th></tr></thead>
+            <tbody>
+              <tr>
+                <td style="font-family:monospace;font-size:10px;color:var(--audit)">AUD-2026-01</td>
+                <td class="hi">Q1 — Januari 2026</td>
+                <td style="font-family:monospace;font-size:10px">20-22 Jan 2026</td>
+                <td style="font-size:10.5px">Ahmad Muhar</td>
+                <td style="font-size:10px">18 Elemen PSAIMS</td>
+                <td style="font-family:monospace;font-size:10px">3 hari</td>
+                <td style="font-family:monospace;font-size:11px;color:var(--lime);font-weight:700">87%</td>
+                <td><span class="badge b-r">5 open</span></td>
+                <td><span class="badge b-g">Finalized</span></td>
+              </tr>
+              <tr>
+                <td style="font-family:monospace;font-size:10px;color:var(--audit)">AUD-2025-04</td>
+                <td class="hi">Q4 — Desember 2025</td>
+                <td style="font-family:monospace;font-size:10px">10-12 Des 2025</td>
+                <td style="font-size:10.5px">Ahmad Muhar</td>
+                <td style="font-size:10px">18 Elemen PSAIMS</td>
+                <td style="font-family:monospace;font-size:10px">3 hari</td>
+                <td style="font-family:monospace;font-size:11px;color:var(--lime);font-weight:700">85%</td>
+                <td><span class="badge b-g">Closed</span></td>
+                <td><span class="badge b-g">Finalized</span></td>
+              </tr>
+              <tr>
+                <td style="font-family:monospace;font-size:10px;color:var(--audit)">AUD-2025-03</td>
+                <td class="hi">Q3 — September 2025</td>
+                <td style="font-family:monospace;font-size:10px">15-17 Sep 2025</td>
+                <td style="font-size:10.5px">Hendra Setiawan</td>
+                <td style="font-size:10px">18 Elemen PSAIMS</td>
+                <td style="font-family:monospace;font-size:10px">3 hari</td>
+                <td style="font-family:monospace;font-size:11px;color:var(--lime);font-weight:700">84%</td>
+                <td><span class="badge b-g">Closed</span></td>
+                <td><span class="badge b-g">Finalized</span></td>
+              </tr>
+              <tr>
+                <td style="font-family:monospace;font-size:10px;color:var(--audit)">AUD-2025-02</td>
+                <td class="hi">Q2 — Juni 2025</td>
+                <td style="font-family:monospace;font-size:10px">18-20 Jun 2025</td>
+                <td style="font-size:10.5px">Ahmad Muhar</td>
+                <td style="font-size:10px">18 Elemen PSAIMS</td>
+                <td style="font-family:monospace;font-size:10px">3 hari</td>
+                <td style="font-family:monospace;font-size:11px;color:var(--lime);font-weight:700">81%</td>
+                <td><span class="badge b-g">Closed</span></td>
+                <td><span class="badge b-g">Finalized</span></td>
+              </tr>
+              <tr>
+                <td style="font-family:monospace;font-size:10px;color:var(--audit)">AUD-2025-01</td>
+                <td class="hi">Q1 — Maret 2025</td>
+                <td style="font-family:monospace;font-size:10px">12-14 Mar 2025</td>
+                <td style="font-size:10.5px">Ahmad Muhar</td>
+                <td style="font-size:10px">18 Elemen PSAIMS</td>
+                <td style="font-family:monospace;font-size:10px">3 hari</td>
+                <td style="font-family:monospace;font-size:11px;color:var(--yel);font-weight:700">78%</td>
+                <td><span class="badge b-g">Closed</span></td>
+                <td><span class="badge b-g">Finalized</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div><!-- /page-history -->
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app-body -->
+
+<script>
+const pages = ['elemen','finding','schedule','history','tinjauan','overview'];
+const tabMap = {
+  'elemen':   'tab-elemen',
+  'finding':  'tab-finding',
+  'schedule': 'tab-schedule',
+  'history':  'tab-history',
+  'tinjauan': 'tab-tinjauan',
+  'overview': null,
+};
+const addBtnLabel = {
+  'elemen':   '+ Update Compliance',
+  'finding':  '+ New Finding',
+  'schedule': '+ New Jadwal Audit',
+  'history':  '+ New Audit',
+  'tinjauan': '+ New Tinjauan',
+  'overview': '+ New Audit',
+};
+
+function showPage(name) {
+  pages.forEach(p => {
+    document.getElementById('page-' + p).classList.remove('active');
+    const tid = tabMap[p];
+    if (tid) document.getElementById(tid).classList.remove('active');
+  });
+  document.getElementById('page-' + name).classList.add('active');
+  const tid = tabMap[name];
+  if (tid) document.getElementById(tid).classList.add('active');
+  document.getElementById('add-btn').textContent = addBtnLabel[name] || '+ New';
+}
+
+function showElDetail(num) {
+  // Highlight clicked card briefly
+  const cards = document.querySelectorAll('.elemen-card');
+  cards.forEach(c => c.style.boxShadow = '');
+  if (cards[num-1]) cards[num-1].style.boxShadow = '0 0 0 2px var(--audit)';
+  setTimeout(() => { if(cards[num-1]) cards[num-1].style.boxShadow = ''; }, 1200);
+}
+
+showPage('elemen');
+</script>
+
+</body>
+</html>
