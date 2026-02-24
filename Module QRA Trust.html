@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>TRUST — QRA Module (NHA + HHA)</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@700&family=Share+Tech+Mono&family=Exo+2:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg:     #0D1117;
+  --dark:   #13181F;
+  --mid:    #1A2130;
+  --panel:  #1E2638;
+  --card:   #161D2A;
+  --border: #2A3650;
+  --bord2:  #1A2235;
+  --txt:    #CDD5E0;
+  --dim:    #7A8A9E;
+  --mute:   #445060;
+  --blue:  #4A9EE8;
+  --lime:  #A8D636;
+  --org:   #E8920C;
+  --red:   #E85050;
+  --yel:   #E8C040;
+  --teal:  #2EC4B6;
+  --pur:   #8B5CF6;
+  --pink:  #E8508A;
+}
+body {
+  font-family: 'Exo 2', sans-serif;
+  background: var(--bg); color: var(--txt);
+  display: flex; flex-direction: column;
+  height: 100vh; overflow: hidden;
+}
+
+/* ── TOP NAV ── */
+.topnav {
+  height: 50px; background: var(--dark);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; flex-shrink: 0;
+}
+.hamburger { width:50px; height:50px; display:flex; align-items:center; justify-content:center; font-size:18px; color:var(--dim); cursor:pointer; border-right:1px solid var(--border); }
+.logo { padding:0 16px; height:50px; display:flex; align-items:center; gap:9px; border-right:1px solid var(--border); }
+.logo-word { font-family:'Rajdhani',sans-serif; font-size:28px; font-weight:700; line-height:1; }
+.logo-word .t { color:var(--blue); } .logo-word .r { color:var(--txt); }
+.logo-sub { font-size:7px; color:var(--mute); line-height:1.3; max-width:90px; }
+.nav-links { display:flex; align-items:center; height:50px; padding:0 6px; flex:1; }
+.nl { display:flex; align-items:center; gap:6px; padding:0 13px; height:50px; font-size:12.5px; font-weight:500; color:var(--dim); cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap; }
+.nl:hover { color:var(--txt); }
+.nl.active { color:var(--blue); border-bottom-color:var(--blue); }
+.nav-admin { margin-left:auto; margin-right:14px; padding:6px 14px; border:1px solid var(--border); border-radius:5px; font-size:12px; font-weight:600; color:var(--txt); background:var(--mid); display:flex; align-items:center; gap:7px; }
+
+/* ── BODY ── */
+.app-body { display:flex; flex:1; overflow:hidden; }
+
+/* ── SIDEBAR ── */
+.sidebar { width:88px; background:var(--dark); border-right:1px solid var(--border); display:flex; flex-direction:column; align-items:center; overflow-y:auto; flex-shrink:0; }
+.sidebar::-webkit-scrollbar { width:0; }
+.mod { width:100%; padding:11px 6px 10px; display:flex; flex-direction:column; align-items:center; gap:5px; cursor:pointer; border-left:3px solid transparent; border-bottom:1px solid var(--bord2); transition:all .15s; color:var(--mute); position:relative; }
+.mod:hover { background:rgba(255,255,255,.04); color:var(--dim); }
+.mod.sel { background:rgba(74,158,232,.1); border-left-color:var(--blue); color:var(--blue); }
+.mod.qra-sel { background:rgba(74,158,232,.1); border-left-color:var(--blue); color:var(--blue); }
+.mod .arrow { position:absolute; right:5px; top:50%; transform:translateY(-50%); font-size:9px; color:var(--mute); opacity:.6; }
+.mod-ico { font-size:20px; line-height:1; }
+.mod-lbl { font-size:8px; font-weight:600; letter-spacing:.3px; text-align:center; line-height:1.2; max-width:76px; color:inherit; }
+.mod-badge { position:absolute; top:6px; right:6px; min-width:15px; height:15px; border-radius:8px; font-size:8px; font-weight:700; color:white; display:flex; align-items:center; justify-content:center; padding:0 3px; font-family:'Share Tech Mono',monospace; }
+.mod-divider { width:55px; height:1px; background:var(--border); margin:4px 0; flex-shrink:0; }
+.mod-section { font-size:7px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:var(--mute); text-align:center; padding:3px 0 2px; }
+
+/* ── TREE ── */
+.tree-panel { width:235px; background:var(--dark); border-right:1px solid var(--border); display:flex; flex-direction:column; flex-shrink:0; }
+.tree-hdr { padding:7px 10px; border-bottom:1px solid var(--border); background:var(--mid); display:flex; align-items:center; justify-content:space-between; }
+.tree-hdr-title { font-size:12px; font-weight:600; }
+.thbtns { display:flex; gap:3px; }
+.thb { width:24px; height:24px; border-radius:4px; border:1px solid var(--border); background:var(--dark); display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--dim); cursor:pointer; }
+.tree { overflow-y:auto; flex:1; }
+.tree::-webkit-scrollbar { width:3px; }
+.tree::-webkit-scrollbar-thumb { background:var(--border); }
+.tn { display:flex; align-items:center; gap:5px; padding:5px 8px; font-size:11.5px; cursor:pointer; color:var(--dim); }
+.tn:hover { background:rgba(255,255,255,.04); }
+.tn.sel { background:rgba(74,158,232,.1); color:var(--blue); }
+.tn .arr { font-size:7px; width:10px; color:var(--mute); flex-shrink:0; }
+.i1{padding-left:20px} .i2{padding-left:34px} .i3{padding-left:48px}
+
+/* ── MAIN ── */
+.main { flex:1; overflow:hidden; display:flex; flex-direction:column; }
+
+/* ── PAGE HEADER ── */
+.page-hdr { background:var(--mid); border-bottom:1px solid var(--border); padding:0 18px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0; height:42px; }
+.breadcrumb { font-size:10.5px; color:var(--mute); display:flex; align-items:center; gap:5px; }
+.breadcrumb .cur { color:var(--blue); font-weight:600; }
+.page-tabs { display:flex; }
+.ptab { padding:0 15px; height:42px; display:flex; align-items:center; font-size:11.5px; font-weight:500; color:var(--dim); cursor:pointer; border-bottom:2px solid transparent; transition:all .12s; }
+.ptab:hover { color:var(--txt); }
+.ptab.active { color:var(--blue); border-bottom-color:var(--blue); font-weight:600; }
+.page-actions { display:flex; gap:6px; }
+.abtn { display:flex; align-items:center; gap:5px; padding:5px 11px; border-radius:4px; font-size:11px; font-weight:600; border:1px solid var(--border); background:var(--panel); color:var(--dim); cursor:pointer; }
+.abtn.p { background:var(--blue); border-color:var(--blue); color:white; }
+
+/* ── TYPE SWITCHER (NHA / HHA) ── */
+.type-switcher {
+  background: var(--dark); border-bottom: 1px solid var(--border);
+  padding: 10px 18px; display: flex; align-items: center; gap: 14px; flex-shrink: 0;
+}
+.type-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 20px; border-radius: 6px;
+  font-size: 12.5px; font-weight: 700; cursor: pointer;
+  border: 1px solid var(--border); background: var(--mid);
+  color: var(--dim); transition: all .15s;
+}
+.type-btn:hover { border-color: rgba(255,255,255,.2); color: var(--txt); }
+.type-btn.nha-active {
+  background: rgba(46,196,182,.12);
+  border-color: var(--teal); color: var(--teal);
+}
+.type-btn.hha-active {
+  background: rgba(232,80,80,.12);
+  border-color: var(--red); color: var(--red);
+}
+.type-btn .tb-ico { font-size: 18px; }
+.type-btn .tb-tag {
+  font-size: 8px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase; opacity: .6;
+}
+.type-btn .tb-name { font-size: 13px; font-weight: 700; }
+.type-divider { height: 36px; width: 1px; background: var(--border); }
+.type-note { font-size: 10.5px; color: var(--mute); margin-left: 4px; }
+.type-note span { color: var(--blue); font-weight: 600; }
+
+/* ── CONTENT ── */
+.content { flex:1; overflow-y:auto; padding:14px 16px; }
+.content::-webkit-scrollbar { width:4px; }
+.content::-webkit-scrollbar-thumb { background:var(--border); }
+
+/* SECTION */
+.sec-lbl { font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:1.2px; color:var(--mute); display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+.sec-lbl::after { content:''; flex:1; height:1px; background:var(--bord2); }
+.sdot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+
+/* KPI ROW */
+.kpi-row { display:grid; grid-template-columns:repeat(5,1fr); gap:9px; margin-bottom:14px; }
+.kc { background:var(--card); border:1px solid var(--border); border-radius:6px; padding:12px 12px 11px; position:relative; overflow:hidden; cursor:pointer; }
+.kc:hover { border-color:rgba(255,255,255,.15); }
+.kc-top { position:absolute; top:0; left:0; right:0; height:2px; }
+.kc-ico { font-size:16px; margin-bottom:7px; display:block; }
+.kc-val { font-size:22px; font-weight:700; font-family:'Share Tech Mono',monospace; line-height:1; margin-bottom:3px; }
+.kc-lbl { font-size:9px; color:var(--mute); text-transform:uppercase; letter-spacing:.4px; margin-bottom:5px; }
+.kc-sub { font-size:10px; }
+
+/* GRID */
+.g2  { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+.g3  { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:12px; }
+.g32 { display:grid; grid-template-columns:2fr 1fr; gap:12px; margin-bottom:12px; }
+.g23 { display:grid; grid-template-columns:1fr 2fr; gap:12px; margin-bottom:12px; }
+.g211{ display:grid; grid-template-columns:2fr 1fr 1fr; gap:12px; margin-bottom:12px; }
+
+/* PANEL */
+.panel { background:var(--card); border:1px solid var(--border); border-radius:6px; overflow:hidden; }
+.ph { background:var(--panel); border-bottom:1px solid var(--border); padding:8px 13px; display:flex; align-items:center; justify-content:space-between; }
+.pt { font-size:12px; font-weight:600; color:var(--txt); display:flex; align-items:center; gap:6px; }
+.ptag { font-size:9px; padding:2px 7px; border-radius:10px; font-weight:700; }
+.pa { font-size:10.5px; color:var(--blue); cursor:pointer; font-weight:500; }
+.pb { padding:10px 13px; }
+
+/* ── SCENARIO CARDS — NHA & HHA ── */
+.scen-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding:12px 13px; }
+.scen-card {
+  border-radius:7px; padding:14px 13px;
+  cursor:pointer; border:1px solid transparent;
+  transition:all .15s; position:relative; overflow:hidden;
+}
+.scen-card:hover { transform:translateY(-1px); }
+.scen-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px; border-radius:7px 7px 0 0;
+}
+.sc-tag { font-size:8px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; opacity:.6; margin-bottom:6px; }
+.sc-ico { font-size:28px; margin-bottom:8px; }
+.sc-name { font-size:12px; font-weight:700; margin-bottom:6px; line-height:1.3; }
+.sc-ir { font-size:11px; font-family:'Share Tech Mono',monospace; margin-bottom:8px; opacity:.7; }
+.sc-footer { display:flex; align-items:center; justify-content:space-between; }
+.sc-count { font-size:10px; opacity:.55; }
+
+/* NHA scenarios */
+.nha-ship  { background:rgba(46,196,182,.08);  border-color:rgba(46,196,182,.2); }
+.nha-ship::before  { background:var(--teal); }
+.nha-drop  { background:rgba(232,80,80,.08);   border-color:rgba(232,80,80,.2); }
+.nha-drop::before  { background:var(--red); }
+.nha-trans { background:rgba(74,158,232,.08);  border-color:rgba(74,158,232,.2); }
+.nha-trans::before { background:var(--blue); }
+
+/* HHA scenarios */
+.hha-jet   { background:rgba(232,80,80,.1);    border-color:rgba(232,80,80,.25); }
+.hha-jet::before   { background:var(--red); }
+.hha-flash { background:rgba(232,192,64,.08);  border-color:rgba(232,192,64,.2); }
+.hha-flash::before { background:var(--yel); }
+.hha-pool  { background:rgba(232,146,12,.08);  border-color:rgba(232,146,12,.2); }
+.hha-pool::before  { background:var(--org); }
+.hha-expl  { background:rgba(139,92,246,.1);   border-color:rgba(139,92,246,.25); }
+.hha-expl::before  { background:var(--pur); }
+
+/* ── RISK MATRIX (5x5) ── */
+.risk-matrix { padding:12px 13px; }
+.matrix-title { font-size:10.5px; color:var(--dim); margin-bottom:10px; font-weight:600; }
+.matrix-wrap { display:flex; gap:12px; }
+.matrix-table { flex:1; }
+.matrix-grid {
+  display:grid; grid-template-columns:auto repeat(5,1fr);
+  gap:2px;
+}
+.mg-corner { display:flex; align-items:flex-end; justify-content:center; padding:4px; font-size:8.5px; color:var(--mute); font-weight:600; text-align:center; }
+.mg-col-header { text-align:center; padding:5px 2px; font-size:8px; color:var(--dim); font-weight:600; line-height:1.2; }
+.mg-row-header {
+  display:flex; align-items:center; justify-content:flex-end;
+  padding:2px 6px 2px 0; font-size:8px; color:var(--dim); font-weight:600;
+  writing-mode:horizontal-tb; white-space:nowrap;
+}
+.mg-cell {
+  border-radius:3px; height:34px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:8.5px; font-weight:700; cursor:pointer;
+  transition:opacity .1s; letter-spacing:.3px;
+  position:relative;
+}
+.mg-cell:hover { opacity:.8; }
+.mc-low    { background:rgba(46,196,182,.2);  color:var(--teal); border:1px solid rgba(46,196,182,.3); }
+.mc-med    { background:rgba(232,192,64,.2);  color:var(--yel);  border:1px solid rgba(232,192,64,.3); }
+.mc-high   { background:rgba(232,146,12,.25); color:var(--org);  border:1px solid rgba(232,146,12,.35); }
+.mc-vhigh  { background:rgba(232,80,80,.25);  color:var(--red);  border:1px solid rgba(232,80,80,.35); }
+.mg-cell .dot { width:7px; height:7px; border-radius:50%; background:white; opacity:.7; }
+
+/* Matrix legend */
+.matrix-legend { display:flex; flex-direction:column; gap:6px; justify-content:center; min-width:80px; }
+.ml-item { display:flex; align-items:center; gap:6px; }
+.ml-box { width:14px; height:14px; border-radius:3px; flex-shrink:0; }
+.ml-label { font-size:9.5px; color:var(--dim); }
+
+/* Matrix axis labels */
+.matrix-x-label { text-align:center; font-size:9px; color:var(--mute); margin-top:5px; letter-spacing:.5px; text-transform:uppercase; }
+.matrix-y-wrap { display:flex; align-items:center; gap:4px; }
+.matrix-y-label { writing-mode:vertical-rl; transform:rotate(180deg); font-size:9px; color:var(--mute); letter-spacing:.5px; text-transform:uppercase; }
+
+/* ── TABLE ── */
+.dt { width:100%; border-collapse:collapse; font-size:11.5px; }
+.dt th { background:var(--panel); color:var(--dim); font-weight:600; padding:7px 11px; text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:.5px; border-bottom:1px solid var(--border); white-space:nowrap; }
+.dt td { padding:7px 11px; border-bottom:1px solid var(--bord2); color:var(--dim); vertical-align:middle; }
+.dt tr:hover td { background:rgba(255,255,255,.02); }
+.dt tr:last-child td { border-bottom:none; }
+.dt td.hi { color:var(--txt); font-weight:500; }
+
+/* ── BADGES ── */
+.badge { display:inline-flex; align-items:center; padding:2px 7px; border-radius:3px; font-size:9.5px; font-weight:700; white-space:nowrap; }
+.b-r{background:rgba(232,80,80,.14);  color:#F08080;      border:1px solid rgba(232,80,80,.3);}
+.b-y{background:rgba(232,192,64,.14); color:var(--yel);   border:1px solid rgba(232,192,64,.3);}
+.b-g{background:rgba(168,214,54,.14); color:var(--lime);  border:1px solid rgba(168,214,54,.3);}
+.b-b{background:rgba(74,158,232,.14); color:var(--blue);  border:1px solid rgba(74,158,232,.3);}
+.b-o{background:rgba(232,146,12,.14); color:var(--org);   border:1px solid rgba(232,146,12,.3);}
+.b-t{background:rgba(46,196,182,.14); color:var(--teal);  border:1px solid rgba(46,196,182,.3);}
+.b-p{background:rgba(139,92,246,.14); color:var(--pur);   border:1px solid rgba(139,92,246,.3);}
+.b-d{background:rgba(255,255,255,.05);color:var(--mute);  border:1px solid var(--border);}
+
+/* ── IR LEVEL TAG ── */
+.ir-tag { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--dim); }
+
+/* ── COMPARISON TABLE (NHA vs HHA) ── */
+.comp-hdr { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; padding:10px 13px 6px; }
+.comp-hdr-cell { text-align:center; padding:8px; border-radius:5px; font-size:11px; font-weight:700; }
+.comp-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; padding:4px 13px; }
+.comp-cell { padding:8px; border-radius:5px; font-size:11px; }
+.comp-aspect { color:var(--dim); font-weight:600; display:flex; align-items:center; }
+.comp-nha { background:rgba(46,196,182,.06); color:var(--txt); text-align:center; font-size:10.5px; }
+.comp-hha { background:rgba(232,80,80,.06);  color:var(--txt); text-align:center; font-size:10.5px; }
+
+/* ── PHAST TABLE ── */
+.phast-row { display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid var(--bord2); }
+.phast-row:last-child { border-bottom:none; }
+.phast-ico { font-size:14px; width:20px; text-align:center; flex-shrink:0; }
+.phast-label { font-size:11px; color:var(--dim); flex:1; }
+.phast-status { font-size:13px; }
+
+/* ── CONSEQUENCE BAR ── */
+.cons-row { display:flex; align-items:center; gap:8px; margin-bottom:7px; }
+.cons-label { font-size:10.5px; color:var(--dim); width:110px; flex-shrink:0; }
+.cons-bar-wrap { flex:1; height:12px; background:var(--mid); border-radius:4px; overflow:hidden; position:relative; }
+.cons-bar-fill { height:100%; border-radius:4px; display:flex; align-items:center; justify-content:flex-end; padding-right:6px; }
+.cons-bar-fill span { font-size:8.5px; font-weight:700; color:rgba(255,255,255,.8); font-family:'Share Tech Mono',monospace; }
+.cons-total { font-size:10px; font-family:'Share Tech Mono',monospace; font-weight:600; width:40px; text-align:right; }
+
+/* ── RISK TREND SPARKLINE (CSS) ── */
+.trend-row { display:flex; align-items:center; gap:6px; margin-bottom:6px; }
+.trend-label { font-size:10.5px; color:var(--dim); width:120px; flex-shrink:0; }
+.sparkline { display:flex; align-items:flex-end; gap:2px; height:24px; flex:1; }
+.spark-bar { flex:1; border-radius:2px 2px 0 0; min-height:3px; }
+.trend-val { font-size:10px; font-family:'Share Tech Mono',monospace; width:50px; text-align:right; }
+
+/* ── ACTIVITY ── */
+.ai { display:flex; gap:9px; padding:7px 0; border-bottom:1px solid var(--bord2); }
+.ai:last-child { border-bottom:none; }
+.aln { display:flex; flex-direction:column; align-items:center; flex-shrink:0; width:12px; }
+.adot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.aconn { width:1px; flex:1; background:var(--bord2); margin-top:3px; }
+.ac { flex:1; }
+.at { font-size:11.5px; font-weight:600; color:var(--txt); margin-bottom:2px; }
+.am { font-size:10px; color:var(--mute); }
+.ats { font-size:9.5px; color:var(--mute); font-family:'Share Tech Mono',monospace; white-space:nowrap; }
+
+/* ── STATUS ROW ── */
+.sr { display:flex; align-items:center; padding:7px 0; border-bottom:1px solid var(--bord2); gap:10px; font-size:11px; }
+.sr:last-child { border-bottom:none; }
+.sr-l { flex:1; }
+.sr-name { font-size:11.5px; font-weight:600; color:var(--txt); }
+.sr-sub  { font-size:10px; color:var(--mute); }
+.sr-r { display:flex; align-items:center; gap:7px; }
+.sr-ir { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--dim); }
+
+/* ── IMPACT ZONE ── */
+.zone-wrap { display:flex; gap:12px; align-items:flex-start; padding:10px 13px; }
+.zone-diagram { width:160px; height:160px; position:relative; flex-shrink:0; }
+.zone-circle {
+  position:absolute; border-radius:50%;
+  left:50%; top:50%; transform:translate(-50%,-50%);
+  display:flex; align-items:center; justify-content:center;
+}
+.zone-label { position:absolute; font-size:8px; font-weight:700; font-family:'Share Tech Mono',monospace; white-space:nowrap; }
+.zone-info { flex:1; }
+.zone-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.zone-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.zone-desc { font-size:11px; color:var(--dim); }
+.zone-dist { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--txt); font-weight:600; margin-left:auto; }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <div class="hamburger">☰</div>
+  <div class="logo">
+    <div class="logo-word"><span class="t">T</span><span class="r">RUST</span></div>
+    <div class="logo-sub">Total Reliability & Unified System for Tracking Asset Integrity</div>
+  </div>
+  <div class="nav-links">
+    <div class="nl">⊞ Dashboard</div>
+    <div class="nl">⚠ Anomaly</div>
+    <div class="nl">⬡ Corrosion</div>
+    <div class="nl">⊙ IOW</div>
+    <div class="nl">◫ IMR</div>
+    <div class="nl active">↑ Export</div>
+    <div class="nl">↓ Import</div>
+    <div class="nl">⊙ SIMOM</div>
+  </div>
+  <div class="nav-admin">⚙ Administrator</div>
+</nav>
+
+<div class="app-body">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="mod"><span class="arrow">›</span><div class="mod-ico">⊞</div><div class="mod-lbl">Dashboard</div></div>
+    <div class="mod"><span class="arrow">›</span><div class="mod-ico">≡</div><div class="mod-lbl">Asset...</div></div>
+    <div class="mod"><span class="arrow">›</span><div class="mod-ico">🔷</div><div class="mod-lbl">Integrity</div></div>
+    <div class="mod"><span class="arrow">›</span><div class="mod-ico">⚙</div><div class="mod-lbl">Reliabil...</div><div class="mod-badge" style="background:var(--red)">2</div></div>
+    <div class="mod"><span class="arrow">›</span><div class="mod-ico">🛡</div><div class="mod-lbl">Safety I.</div></div>
+    <div class="mod"><span class="arrow">›</span><div class="mod-ico">📋</div><div class="mod-lbl">Insp. Pl.</div></div>
+    <div class="mod"><span class="arrow">›</span><div class="mod-ico">◈</div><div class="mod-lbl">Integrit...</div></div>
+    <div class="mod-divider"></div>
+    <div class="mod-section">PSAIMS</div>
+    <div class="mod"><span class="arrow">›</span><div class="mod-ico">🔒</div><div class="mod-lbl">SECE & Perf. Std</div><div class="mod-badge" style="background:var(--red)">3</div></div>
+    <div class="mod"><span class="arrow">›</span><div class="mod-ico">⚡</div><div class="mod-lbl">REL Mgmt</div><div class="mod-badge" style="background:var(--red)">7</div></div>
+    <div class="mod"><span class="arrow">›</span><div class="mod-ico">✅</div><div class="mod-lbl">Audit & Mon.</div><div class="mod-badge" style="background:var(--org)">5</div></div>
+    <div class="mod"><span class="arrow">›</span><div class="mod-ico">↻</div><div class="mod-lbl">Mgmt of Change</div><div class="mod-badge" style="background:var(--org)">4</div></div>
+    <div class="mod qra-sel"><span class="arrow">›</span><div class="mod-ico">◉</div><div class="mod-lbl">QRA NHA+HHA</div></div>
+  </div>
+
+  <!-- TREE -->
+  <div class="tree-panel">
+    <div class="tree-hdr">
+      <div class="tree-hdr-title">Asset Register</div>
+      <div class="thbtns"><div class="thb">⌂</div><div class="thb">⟳</div><div class="thb">✎</div><div class="thb">⌕</div></div>
+    </div>
+    <div class="tree">
+      <div class="tn"><span class="arr">▼</span>🏢 LBM</div>
+      <div class="tn i1"><span class="arr">▼</span>🚢 FSRU Lampung</div>
+      <div class="tn i2"><span class="arr">▼</span>📁 Tower Yoke Mooring</div>
+      <div class="tn i3"><span class="arr"> </span>⚙ ERC System</div>
+      <div class="tn i3"><span class="arr"> </span>⚙ QCDC System</div>
+      <div class="tn i3"><span class="arr"> </span>⚙ ESD System</div>
+      <div class="tn i2"><span class="arr">▼</span>📁 Subsea Pipeline</div>
+      <div class="tn i3"><span class="arr"> </span>⚙ ESDV-001</div>
+      <div class="tn i3"><span class="arr"> </span>⚙ Pipeline Leak Det.</div>
+      <div class="tn i2 sel"><span class="arr">▼</span>📁 Onshore Receiving</div>
+      <div class="tn i3 sel"><span class="arr"> </span>⚙ Pressure Letdown ★</div>
+      <div class="tn i3"><span class="arr"> </span>⚙ Water Bath Heater</div>
+      <div class="tn i3"><span class="arr"> </span>⚙ Gas Filter</div>
+      <div class="tn i3"><span class="arr"> </span>⚙ Metering Skid</div>
+      <div class="tn i3"><span class="arr"> </span>⚗ Odorizer Tank (THT)</div>
+      <div class="tn i1"><span class="arr">▶</span>📁 GREEN-ZONE</div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- PAGE TABS -->
+    <div class="page-hdr">
+      <div class="page-tabs">
+        <div class="ptab">Dashboard QRA</div>
+        <div class="ptab active">Skenario Register</div>
+        <div class="ptab">Risk Matrix</div>
+        <div class="ptab">Consequence Analysis</div>
+        <div class="ptab">PHAST Data</div>
+        <div class="ptab">Report & History</div>
+      </div>
+      <div class="page-actions">
+        <div class="abtn">↗ Export</div>
+        <div class="abtn p">+ New Skenario</div>
+      </div>
+    </div>
+
+    <!-- NHA / HHA SWITCHER -->
+    <div class="type-switcher">
+      <div class="type-btn nha-active" id="btn-nha" onclick="switchType('nha')">
+        <div class="tb-ico">⚓</div>
+        <div>
+          <div class="tb-tag">Modul 5A</div>
+          <div class="tb-name" style="color:var(--teal)">Non-HC Analysis (NHA)</div>
+        </div>
+      </div>
+      <div class="type-btn" id="btn-hha" onclick="switchType('hha')">
+        <div class="tb-ico">🔥</div>
+        <div>
+          <div class="tb-tag">Modul 5B</div>
+          <div class="tb-name">Hydrocarbon Analysis (HHA)</div>
+        </div>
+      </div>
+      <div class="type-divider"></div>
+      <div class="type-note">Menampilkan: <span id="type-note-txt">NHA — Non-Hydrocarbon Scenarios (Ship Collision, Drop Object, Transport Risk)</span></div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content" id="main-content">
+
+      <!-- ══════════════════════════════════
+           NHA CONTENT
+      ══════════════════════════════════ -->
+      <div id="nha-content">
+
+        <!-- KPI -->
+        <div class="sec-lbl"><div class="sdot" style="background:var(--teal)"></div>NHA — Summary Risiko</div>
+        <div class="kpi-row">
+          <div class="kc">
+            <div class="kc-top" style="background:var(--teal)"></div>
+            <span class="kc-ico">⚓</span>
+            <div class="kc-val" style="color:var(--teal)">3</div>
+            <div class="kc-lbl">Tipe Skenario NHA</div>
+            <div class="kc-sub" style="color:var(--dim)">Ship · Drop · Transport</div>
+          </div>
+          <div class="kc">
+            <div class="kc-top" style="background:var(--red)"></div>
+            <span class="kc-ico">⚠</span>
+            <div class="kc-val" style="color:var(--red)">2</div>
+            <div class="kc-lbl">Unacceptable</div>
+            <div class="kc-sub" style="color:var(--red)">Perlu ALARP measures</div>
+          </div>
+          <div class="kc">
+            <div class="kc-top" style="background:var(--yel)"></div>
+            <span class="kc-ico">⚖</span>
+            <div class="kc-val" style="color:var(--yel)">5</div>
+            <div class="kc-lbl">ALARP</div>
+            <div class="kc-sub" style="color:var(--yel)">Dalam proses review</div>
+          </div>
+          <div class="kc">
+            <div class="kc-top" style="background:var(--lime)"></div>
+            <span class="kc-ico">✓</span>
+            <div class="kc-val" style="color:var(--lime)">4</div>
+            <div class="kc-lbl">Acceptable</div>
+            <div class="kc-sub" style="color:var(--lime)">IR di bawah 10⁻⁶</div>
+          </div>
+          <div class="kc">
+            <div class="kc-top" style="background:var(--blue)"></div>
+            <span class="kc-ico">📄</span>
+            <div class="kc-val" style="color:var(--blue)">11</div>
+            <div class="kc-lbl">Total Skenario</div>
+            <div class="kc-sub" style="color:var(--dim)">NHA aktif terdokumentasi</div>
+          </div>
+        </div>
+
+        <!-- SCENARIO CARDS NHA -->
+        <div class="sec-lbl"><div class="sdot" style="background:var(--teal)"></div>Tipe Skenario NHA</div>
+        <div class="panel" style="margin-bottom:14px">
+          <div class="ph">
+            <div class="pt">⚓ Non-Hydrocarbon Scenarios <span class="ptag b-t">3 TIPE</span></div>
+            <div class="pa">+ Tambah Skenario →</div>
+          </div>
+          <div class="scen-grid">
+
+            <!-- Ship Collision -->
+            <div class="scen-card nha-ship">
+              <div class="sc-tag" style="color:var(--teal)">NHA · Skenario 1</div>
+              <div class="sc-ico">🚢</div>
+              <div class="sc-name" style="color:var(--teal)">Ship Collision</div>
+              <div class="sc-ir">Worst IR: 8.2×10⁻⁵ /yr</div>
+              <div style="margin-bottom:8px">
+                <div style="font-size:10px;color:var(--dim);margin-bottom:3px">Lokasi terdampak:</div>
+                <div style="font-size:10.5px;color:var(--txt)">Tower Yoke Mooring System, FSRU Lampung</div>
+              </div>
+              <div class="sc-footer">
+                <div class="sc-count" style="color:var(--teal)">4 sub-skenario</div>
+                <span class="badge b-y">ALARP</span>
+              </div>
+            </div>
+
+            <!-- Drop Object -->
+            <div class="scen-card nha-drop">
+              <div class="sc-tag" style="color:var(--red)">NHA · Skenario 2</div>
+              <div class="sc-ico">📦</div>
+              <div class="sc-name" style="color:var(--red)">Drop Object</div>
+              <div class="sc-ir">Worst IR: 1.5×10⁻⁴ /yr</div>
+              <div style="margin-bottom:8px">
+                <div style="font-size:10px;color:var(--dim);margin-bottom:3px">Lokasi terdampak:</div>
+                <div style="font-size:10.5px;color:var(--txt)">Onshore Receiving Facility, Area Crane</div>
+              </div>
+              <div class="sc-footer">
+                <div class="sc-count" style="color:var(--red)">3 sub-skenario</div>
+                <span class="badge b-r">UNACCEPTABLE</span>
+              </div>
+            </div>
+
+            <!-- Transport Risk -->
+            <div class="scen-card nha-trans">
+              <div class="sc-tag" style="color:var(--blue)">NHA · Skenario 3</div>
+              <div class="sc-ico">🚤</div>
+              <div class="sc-name" style="color:var(--blue)">Transport Risk</div>
+              <div class="sc-ir">Worst IR: 3.1×10⁻⁶ /yr</div>
+              <div style="margin-bottom:8px">
+                <div style="font-size:10px;color:var(--dim);margin-bottom:3px">Lokasi terdampak:</div>
+                <div style="font-size:10.5px;color:var(--txt)">Subsea Pipeline Route, LNG Carrier Path</div>
+              </div>
+              <div class="sc-footer">
+                <div class="sc-count" style="color:var(--blue)">4 sub-skenario</div>
+                <span class="badge b-g">ACCEPTABLE</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- SKENARIO REGISTER TABLE + RISK MATRIX -->
+        <div class="g32">
+
+          <!-- Register Table -->
+          <div class="panel">
+            <div class="ph">
+              <div class="pt">📋 NHA Skenario Register <span class="ptag b-t">11 RECORD</span></div>
+              <div class="pa">Semua →</div>
+            </div>
+            <table class="dt">
+              <thead>
+                <tr><th>ID</th><th>Skenario</th><th>Tipe</th><th>Lokasi</th><th>Freq. (per yr)</th><th>Consequence</th><th>IR (/yr)</th><th>Risk Level</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-family:monospace;font-size:10px;color:var(--teal)">NHA-001</td>
+                  <td class="hi">LNG Carrier Approach Collision</td>
+                  <td><span class="badge b-t">Ship Collision</span></td>
+                  <td style="font-size:10px">Tower Yoke</td>
+                  <td style="font-family:monospace;font-size:10px">1.2×10⁻³</td>
+                  <td style="font-family:monospace;font-size:10px">Fatality — 1</td>
+                  <td style="font-family:monospace;font-size:10px;color:var(--yel)">8.2×10⁻⁵</td>
+                  <td><span class="badge b-y">ALARP</span></td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-size:10px;color:var(--teal)">NHA-002</td>
+                  <td class="hi">Supply Vessel Swing Collision</td>
+                  <td><span class="badge b-t">Ship Collision</span></td>
+                  <td style="font-size:10px">Tower Yoke</td>
+                  <td style="font-family:monospace;font-size:10px">8.5×10⁻⁴</td>
+                  <td style="font-family:monospace;font-size:10px">Fatality — 2</td>
+                  <td style="font-family:monospace;font-size:10px;color:var(--yel)">4.1×10⁻⁵</td>
+                  <td><span class="badge b-y">ALARP</span></td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-size:10px;color:var(--red)">NHA-003</td>
+                  <td class="hi">Crane Drop — Heavy Lift Ops</td>
+                  <td><span class="badge b-r">Drop Object</span></td>
+                  <td style="font-size:10px">Onshore</td>
+                  <td style="font-family:monospace;font-size:10px">2.1×10⁻²</td>
+                  <td style="font-family:monospace;font-size:10px">Fatality — 3</td>
+                  <td style="font-family:monospace;font-size:10px;color:var(--red)">1.5×10⁻⁴</td>
+                  <td><span class="badge b-r">UNACCEPT.</span></td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-size:10px;color:var(--red)">NHA-004</td>
+                  <td class="hi">Crane Drop — Routine Lifting</td>
+                  <td><span class="badge b-r">Drop Object</span></td>
+                  <td style="font-size:10px">Onshore</td>
+                  <td style="font-family:monospace;font-size:10px">1.8×10⁻²</td>
+                  <td style="font-family:monospace;font-size:10px">Fatality — 1</td>
+                  <td style="font-family:monospace;font-size:10px;color:var(--red)">1.1×10⁻⁴</td>
+                  <td><span class="badge b-r">UNACCEPT.</span></td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-size:10px;color:var(--blue)">NHA-005</td>
+                  <td class="hi">LNG Carrier Route Frequency</td>
+                  <td><span class="badge b-b">Transport Risk</span></td>
+                  <td style="font-size:10px">Subsea Route</td>
+                  <td style="font-family:monospace;font-size:10px">5.2×10⁻⁴</td>
+                  <td style="font-family:monospace;font-size:10px">Fatality — 1</td>
+                  <td style="font-family:monospace;font-size:10px;color:var(--lime)">3.1×10⁻⁶</td>
+                  <td><span class="badge b-g">ACCEPTABLE</span></td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-size:10px;color:var(--teal)">NHA-006</td>
+                  <td class="hi">Anchor Drop — FSRU Mooring</td>
+                  <td><span class="badge b-t">Ship Collision</span></td>
+                  <td style="font-size:10px">Mooring Area</td>
+                  <td style="font-family:monospace;font-size:10px">6.0×10⁻⁴</td>
+                  <td style="font-family:monospace;font-size:10px">Structural</td>
+                  <td style="font-family:monospace;font-size:10px;color:var(--yel)">2.4×10⁻⁵</td>
+                  <td><span class="badge b-y">ALARP</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Risk Matrix + Activity -->
+          <div style="display:flex;flex-direction:column;gap:12px">
+
+            <!-- Risk Matrix 5x5 -->
+            <div class="panel">
+              <div class="ph">
+                <div class="pt">⊞ Risk Matrix 5×5 — NHA</div>
+                <div class="pa">Edit →</div>
+              </div>
+              <div class="risk-matrix">
+                <div class="matrix-wrap">
+                  <div class="matrix-y-label">CONSEQUENCE →</div>
+                  <div>
+                    <div class="matrix-grid">
+                      <!-- Header row -->
+                      <div class="mg-corner">Freq ↓ / Cons →</div>
+                      <div class="mg-col-header">1<br>Negligible</div>
+                      <div class="mg-col-header">2<br>Minor</div>
+                      <div class="mg-col-header">3<br>Moderate</div>
+                      <div class="mg-col-header">4<br>Major</div>
+                      <div class="mg-col-header">5<br>Catastrophic</div>
+                      <!-- Row 5 -->
+                      <div class="mg-row-header">5 Frequent</div>
+                      <div class="mg-cell mc-med">MED</div>
+                      <div class="mg-cell mc-high">HIGH</div>
+                      <div class="mg-cell mc-vhigh">V.HIGH</div>
+                      <div class="mg-cell mc-vhigh">V.HIGH</div>
+                      <div class="mg-cell mc-vhigh">V.HIGH</div>
+                      <!-- Row 4 -->
+                      <div class="mg-row-header">4 Likely</div>
+                      <div class="mg-cell mc-low">LOW</div>
+                      <div class="mg-cell mc-med">MED</div>
+                      <div class="mg-cell mc-high">HIGH</div>
+                      <div class="mg-cell mc-vhigh">V.HIGH</div>
+                      <div class="mg-cell mc-vhigh">V.HIGH</div>
+                      <!-- Row 3 -->
+                      <div class="mg-row-header">3 Possible</div>
+                      <div class="mg-cell mc-low">LOW</div>
+                      <div class="mg-cell mc-med">MED</div>
+                      <div class="mg-cell mc-high" style="position:relative">HIGH<div style="position:absolute;top:3px;right:3px;width:6px;height:6px;border-radius:50%;background:var(--teal);border:1px solid white"></div></div>
+                      <div class="mg-cell mc-high">HIGH</div>
+                      <div class="mg-cell mc-vhigh">V.HIGH</div>
+                      <!-- Row 2 -->
+                      <div class="mg-row-header">2 Unlikely</div>
+                      <div class="mg-cell mc-low">LOW</div>
+                      <div class="mg-cell mc-low">LOW</div>
+                      <div class="mg-cell mc-med">MED</div>
+                      <div class="mg-cell mc-high" style="position:relative">HIGH<div style="position:absolute;top:3px;right:3px;width:6px;height:6px;border-radius:50%;background:var(--red);border:1px solid white"></div></div>
+                      <div class="mg-cell mc-high">HIGH</div>
+                      <!-- Row 1 -->
+                      <div class="mg-row-header">1 Rare</div>
+                      <div class="mg-cell mc-low">LOW</div>
+                      <div class="mg-cell mc-low">LOW</div>
+                      <div class="mg-cell mc-low">LOW</div>
+                      <div class="mg-cell mc-med">MED</div>
+                      <div class="mg-cell mc-med" style="position:relative">MED<div style="position:absolute;top:3px;right:3px;width:6px;height:6px;border-radius:50%;background:var(--blue);border:1px solid white"></div></div>
+                    </div>
+                    <div class="matrix-x-label">FREQUENCY →</div>
+                  </div>
+                  <div class="matrix-legend">
+                    <div class="ml-item"><div class="ml-box mc-vhigh" style="border-radius:3px"></div><div class="ml-label">V.HIGH / Unacceptable</div></div>
+                    <div class="ml-item"><div class="ml-box mc-high"  style="border-radius:3px"></div><div class="ml-label">HIGH / Unacceptable</div></div>
+                    <div class="ml-item"><div class="ml-box mc-med"   style="border-radius:3px"></div><div class="ml-label">MEDIUM / ALARP</div></div>
+                    <div class="ml-item"><div class="ml-box mc-low"   style="border-radius:3px"></div><div class="ml-label">LOW / Acceptable</div></div>
+                    <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--bord2)">
+                      <div class="ml-item" style="margin-bottom:4px"><div style="width:8px;height:8px;border-radius:50%;background:var(--teal);border:1px solid white;flex-shrink:0"></div><div class="ml-label" style="font-size:9px">Ship Collision</div></div>
+                      <div class="ml-item" style="margin-bottom:4px"><div style="width:8px;height:8px;border-radius:50%;background:var(--red);border:1px solid white;flex-shrink:0"></div><div class="ml-label" style="font-size:9px">Drop Object</div></div>
+                      <div class="ml-item"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue);border:1px solid white;flex-shrink:0"></div><div class="ml-label" style="font-size:9px">Transport Risk</div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Activity NHA -->
+            <div class="panel">
+              <div class="ph"><div class="pt">⟳ Activity — NHA</div><div class="pa">Log →</div></div>
+              <div class="pb" style="padding:6px 13px">
+                <div class="ai"><div class="aln"><div class="adot" style="background:var(--red)"></div><div class="aconn"></div></div><div class="ac"><div class="at">NHA-003 naik ke Unacceptable</div><div class="am">Drop Object IR 1.5×10⁻⁴ · Update PHAST</div></div><div class="ats">1 hr lalu</div></div>
+                <div class="ai"><div class="aln"><div class="adot" style="background:var(--teal)"></div><div class="aconn"></div></div><div class="ac"><div class="at">NHA-001 review ALARP measures</div><div class="am">Ship Collision · Engineer: Ahmad Muhar</div></div><div class="ats">Kemarin</div></div>
+                <div class="ai"><div class="aln"><div class="adot" style="background:var(--blue)"></div></div><div class="ac"><div class="at">NHA-005 dikonfirmasi Acceptable</div><div class="am">Transport Risk IR 3.1×10⁻⁶ · Approved</div></div><div class="ats">3 hr lalu</div></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div><!-- /nha-content -->
+
+      <!-- ══════════════════════════════════
+           HHA CONTENT (hidden by default)
+      ══════════════════════════════════ -->
+      <div id="hha-content" style="display:none">
+
+        <!-- KPI HHA -->
+        <div class="sec-lbl"><div class="sdot" style="background:var(--red)"></div>HHA — Summary Risiko Hidrokarbon</div>
+        <div class="kpi-row">
+          <div class="kc">
+            <div class="kc-top" style="background:var(--red)"></div>
+            <span class="kc-ico">🔥</span>
+            <div class="kc-val" style="color:var(--red)">4</div>
+            <div class="kc-lbl">Tipe Skenario HHA</div>
+            <div class="kc-sub" style="color:var(--dim)">Jet·Flash·Pool·Explosion</div>
+          </div>
+          <div class="kc">
+            <div class="kc-top" style="background:var(--red)"></div>
+            <span class="kc-ico">⚠</span>
+            <div class="kc-val" style="color:var(--red)">0</div>
+            <div class="kc-lbl">Unacceptable</div>
+            <div class="kc-sub" style="color:var(--lime)">Semua dalam batas</div>
+          </div>
+          <div class="kc">
+            <div class="kc-top" style="background:var(--yel)"></div>
+            <span class="kc-ico">⚖</span>
+            <div class="kc-val" style="color:var(--yel)">4</div>
+            <div class="kc-lbl">ALARP</div>
+            <div class="kc-sub" style="color:var(--yel)">Monitoring ketat</div>
+          </div>
+          <div class="kc">
+            <div class="kc-top" style="background:var(--lime)"></div>
+            <span class="kc-ico">✓</span>
+            <div class="kc-val" style="color:var(--lime)">3</div>
+            <div class="kc-lbl">Acceptable</div>
+            <div class="kc-sub" style="color:var(--lime)">IR di bawah 10⁻⁶</div>
+          </div>
+          <div class="kc">
+            <div class="kc-top" style="background:var(--org)"></div>
+            <span class="kc-ico">📄</span>
+            <div class="kc-val" style="color:var(--org)">7</div>
+            <div class="kc-lbl">Total Skenario</div>
+            <div class="kc-sub" style="color:var(--dim)">HHA aktif terdokumentasi</div>
+          </div>
+        </div>
+
+        <!-- SCENARIO CARDS HHA -->
+        <div class="sec-lbl"><div class="sdot" style="background:var(--red)"></div>Tipe Skenario HHA</div>
+        <div class="panel" style="margin-bottom:14px">
+          <div class="ph">
+            <div class="pt">🔥 Hydrocarbon Scenarios <span class="ptag b-r">4 TIPE</span><span class="ptag b-o" style="margin-left:4px">PHAST Data</span></div>
+            <div class="pa">+ Tambah Skenario →</div>
+          </div>
+          <div class="scen-grid" style="grid-template-columns:repeat(4,1fr)">
+
+            <!-- Jet Fire -->
+            <div class="scen-card hha-jet">
+              <div class="sc-tag" style="color:var(--red)">HHA · Skenario 1</div>
+              <div class="sc-ico">🔥</div>
+              <div class="sc-name" style="color:var(--red)">Jet Fire</div>
+              <div class="sc-ir">Worst IR: 9.8×10⁻⁵ /yr</div>
+              <div style="margin-bottom:6px">
+                <div style="font-size:9.5px;color:var(--dim);margin-bottom:2px">PHAST Output:</div>
+                <div style="font-size:10px;color:var(--txt)">1kW/m² — 85m radius</div>
+                <div style="font-size:10px;color:var(--txt)">12.5 kW/m² — 28m radius</div>
+              </div>
+              <div class="sc-footer">
+                <div class="sc-count" style="color:var(--red)">3 sub-skenario</div>
+                <span class="badge b-y">ALARP</span>
+              </div>
+            </div>
+
+            <!-- Flash Fire -->
+            <div class="scen-card hha-flash">
+              <div class="sc-tag" style="color:var(--yel)">HHA · Skenario 2</div>
+              <div class="sc-ico">⚡</div>
+              <div class="sc-name" style="color:var(--yel)">Flash Fire</div>
+              <div class="sc-ir">Worst IR: 4.2×10⁻⁵ /yr</div>
+              <div style="margin-bottom:6px">
+                <div style="font-size:9.5px;color:var(--dim);margin-bottom:2px">PHAST Output:</div>
+                <div style="font-size:10px;color:var(--txt)">LFL Envelope — 120m</div>
+                <div style="font-size:10px;color:var(--txt)">½ LFL — 200m radius</div>
+              </div>
+              <div class="sc-footer">
+                <div class="sc-count" style="color:var(--yel)">2 sub-skenario</div>
+                <span class="badge b-y">ALARP</span>
+              </div>
+            </div>
+
+            <!-- Pool Fire -->
+            <div class="scen-card hha-pool">
+              <div class="sc-tag" style="color:var(--org)">HHA · Skenario 3</div>
+              <div class="sc-ico">🌊</div>
+              <div class="sc-name" style="color:var(--org)">Pool Fire</div>
+              <div class="sc-ir">Worst IR: 1.8×10⁻⁵ /yr</div>
+              <div style="margin-bottom:6px">
+                <div style="font-size:9.5px;color:var(--dim);margin-bottom:2px">PHAST Output:</div>
+                <div style="font-size:10px;color:var(--txt)">Pool diam. — 12m</div>
+                <div style="font-size:10px;color:var(--txt)">4 kW/m² — 22m radius</div>
+              </div>
+              <div class="sc-footer">
+                <div class="sc-count" style="color:var(--org)">1 sub-skenario</div>
+                <span class="badge b-g">ACCEPTABLE</span>
+              </div>
+            </div>
+
+            <!-- Explosion -->
+            <div class="scen-card hha-expl">
+              <div class="sc-tag" style="color:var(--pur)">HHA · Skenario 4</div>
+              <div class="sc-ico">💥</div>
+              <div class="sc-name" style="color:var(--pur)">Explosion (VCE)</div>
+              <div class="sc-ir">Worst IR: 2.1×10⁻⁵ /yr</div>
+              <div style="margin-bottom:6px">
+                <div style="font-size:9.5px;color:var(--dim);margin-bottom:2px">PHAST Output:</div>
+                <div style="font-size:10px;color:var(--txt)">Overpressure 0.1 bar — 45m</div>
+                <div style="font-size:10px;color:var(--txt)">Overpressure 0.3 bar — 18m</div>
+              </div>
+              <div class="sc-footer">
+                <div class="sc-count" style="color:var(--pur)">1 sub-skenario</div>
+                <span class="badge b-y">ALARP</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- TABLE + CONSEQUENCE + PHAST -->
+        <div class="g211">
+
+          <!-- HHA Register Table -->
+          <div class="panel">
+            <div class="ph">
+              <div class="pt">📋 HHA Skenario Register <span class="ptag b-r">7 RECORD</span></div>
+              <div class="pa">Semua →</div>
+            </div>
+            <table class="dt">
+              <thead>
+                <tr><th>ID</th><th>Skenario</th><th>Tipe</th><th>Lokasi</th><th>Release Rate</th><th>IR (/yr)</th><th>Risk Level</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-family:monospace;font-size:10px;color:var(--red)">HHA-001</td>
+                  <td class="hi">Jet Fire — Pressure Letdown</td>
+                  <td><span class="badge b-r">Jet Fire</span></td>
+                  <td style="font-size:10px">Pressure Letdown</td>
+                  <td style="font-family:monospace;font-size:10px">12.5 kg/s</td>
+                  <td style="font-family:monospace;font-size:10px;color:var(--yel)">9.8×10⁻⁵</td>
+                  <td><span class="badge b-y">ALARP</span></td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-size:10px;color:var(--red)">HHA-002</td>
+                  <td class="hi">Jet Fire — Water Bath Heater</td>
+                  <td><span class="badge b-r">Jet Fire</span></td>
+                  <td style="font-size:10px">Water Bath Heater</td>
+                  <td style="font-family:monospace;font-size:10px">8.2 kg/s</td>
+                  <td style="font-family:monospace;font-size:10px;color:var(--yel)">6.1×10⁻⁵</td>
+                  <td><span class="badge b-y">ALARP</span></td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-size:10px;color:var(--yel)">HHA-003</td>
+                  <td class="hi">Flash Fire — Gas Dispersion</td>
+                  <td><span class="badge b-y">Flash Fire</span></td>
+                  <td style="font-size:10px">Onshore Area</td>
+                  <td style="font-family:monospace;font-size:10px">5.8 kg/s</td>
+                  <td style="font-family:monospace;font-size:10px;color:var(--yel)">4.2×10⁻⁵</td>
+                  <td><span class="badge b-y">ALARP</span></td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-size:10px;color:var(--org)">HHA-004</td>
+                  <td class="hi">Pool Fire — LNG Spill</td>
+                  <td><span class="badge b-o">Pool Fire</span></td>
+                  <td style="font-size:10px">Containment Area</td>
+                  <td style="font-family:monospace;font-size:10px">3.1 kg/s</td>
+                  <td style="font-family:monospace;font-size:10px;color:var(--lime)">1.8×10⁻⁵</td>
+                  <td><span class="badge b-g">ACCEPTABLE</span></td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-size:10px;color:var(--pur)">HHA-005</td>
+                  <td class="hi">Explosion (VCE) — Gas Accum.</td>
+                  <td><span class="badge b-p">Explosion</span></td>
+                  <td style="font-size:10px">Enclosed Area</td>
+                  <td style="font-family:monospace;font-size:10px">4.5 kg/s</td>
+                  <td style="font-family:monospace;font-size:10px;color:var(--yel)">2.1×10⁻⁵</td>
+                  <td><span class="badge b-y">ALARP</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Consequence Analysis -->
+          <div style="display:flex;flex-direction:column;gap:12px">
+
+            <div class="panel">
+              <div class="ph"><div class="pt">📐 Consequence — Jet Fire HHA-001</div><div class="pa">PHAST →</div></div>
+              <div class="pb">
+                <div style="font-size:10px;color:var(--mute);margin-bottom:10px;font-family:monospace">Pressure Letdown Station · Release Rate: 12.5 kg/s</div>
+                <!-- Impact Zone Diagram -->
+                <div class="zone-wrap" style="flex-direction:column;padding:0">
+                  <div style="position:relative;width:100%;height:130px;display:flex;align-items:center;justify-content:center;margin-bottom:8px">
+                    <!-- Zone circles -->
+                    <div class="zone-circle" style="width:120px;height:120px;background:rgba(232,80,80,.08);border:1.5px dashed rgba(232,80,80,.3)">
+                      <span style="font-size:7.5px;color:rgba(232,80,80,.5);font-weight:700">1 kW/m²</span>
+                    </div>
+                    <div class="zone-circle" style="width:72px;height:72px;background:rgba(232,80,80,.15);border:1.5px dashed rgba(232,80,80,.5)">
+                      <span style="font-size:7px;color:rgba(232,80,80,.7);font-weight:700">4 kW</span>
+                    </div>
+                    <div class="zone-circle" style="width:36px;height:36px;background:rgba(232,80,80,.3);border:1.5px solid rgba(232,80,80,.7)">
+                      <span style="font-size:7px;color:white;font-weight:700">12.5</span>
+                    </div>
+                    <div class="zone-circle" style="width:10px;height:10px;background:var(--red);border-radius:50%"></div>
+                    <!-- distance labels -->
+                    <div style="position:absolute;right:2px;top:50%;transform:translateY(-50%);font-size:8px;color:var(--red);font-family:monospace">85m</div>
+                    <div style="position:absolute;right:16px;top:38%;font-size:8px;color:rgba(232,80,80,.8);font-family:monospace">52m</div>
+                    <div style="position:absolute;right:30px;top:30%;font-size:8px;color:rgba(232,80,80,.9);font-family:monospace">28m</div>
+                  </div>
+                  <div class="zone-row"><div class="zone-dot" style="background:rgba(232,80,80,.3);border:1px solid rgba(232,80,80,.6)"></div><div class="zone-desc">1 kW/m² — Aman, tidak nyaman</div><div class="zone-dist">85m</div></div>
+                  <div class="zone-row"><div class="zone-dot" style="background:rgba(232,80,80,.5)"></div><div class="zone-desc">4 kW/m² — Luka bakar 1st degree</div><div class="zone-dist">52m</div></div>
+                  <div class="zone-row"><div class="zone-dot" style="background:rgba(232,80,80,.8)"></div><div class="zone-desc">12.5 kW/m² — Fatal 1% (10s)</div><div class="zone-dist">28m</div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- PHAST Data Checklist -->
+            <div class="panel">
+              <div class="ph"><div class="pt">⚗ PHAST Data Inclusion</div></div>
+              <div class="pb" style="padding:8px 13px">
+                <div class="phast-row"><div class="phast-ico">🌡</div><div class="phast-label">Fluid temperature & phase</div><div class="phast-status">✅</div></div>
+                <div class="phast-row"><div class="phast-ico">⚖</div><div class="phast-label">Hole size & release scenario</div><div class="phast-status">✅</div></div>
+                <div class="phast-row"><div class="phast-ico">💨</div><div class="phast-label">Wind speed & stability class</div><div class="phast-status">✅</div></div>
+                <div class="phast-row"><div class="phast-ico">📍</div><div class="phast-label">Radiation contour (kW/m²)</div><div class="phast-status">✅</div></div>
+                <div class="phast-row"><div class="phast-ico">🔲</div><div class="phast-label">Congestion/confinement factor</div><div class="phast-status">✅</div></div>
+                <div class="phast-row"><div class="phast-ico">🏭</div><div class="phast-label">Terrain & building data</div><div class="phast-status">⚠️</div></div>
+                <div class="phast-row"><div class="phast-ico">👥</div><div class="phast-label">Population density map</div><div class="phast-status">❌</div></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- NHA vs HHA Comparison -->
+        <div class="panel" style="margin-bottom:12px">
+          <div class="ph">
+            <div class="pt">⊞ Perbandingan NHA vs HHA</div>
+            <div class="pa">Detail →</div>
+          </div>
+          <div class="comp-hdr">
+            <div class="comp-hdr-cell" style="background:var(--mid);color:var(--dim)">Aspek</div>
+            <div class="comp-hdr-cell" style="background:rgba(46,196,182,.1);color:var(--teal)">⚓ NHA</div>
+            <div class="comp-hdr-cell" style="background:rgba(232,80,80,.1);color:var(--red)">🔥 HHA</div>
+          </div>
+          <div class="comp-row"><div class="comp-cell comp-aspect">Tipe Bahaya</div><div class="comp-cell comp-nha">Non-Hydrocarbon Physical</div><div class="comp-cell comp-hha">Hydrocarbon Release</div></div>
+          <div class="comp-row"><div class="comp-cell comp-aspect">Tool Analisis</div><div class="comp-cell comp-nha">Manual Calc / FTA</div><div class="comp-cell comp-hha">PHAST Software</div></div>
+          <div class="comp-row"><div class="comp-cell comp-aspect">Skenario Utama</div><div class="comp-cell comp-nha">Ship Collision, Drop Object, Transport</div><div class="comp-cell comp-hha">Jet Fire, Flash Fire, Pool Fire, Explosion</div></div>
+          <div class="comp-row"><div class="comp-cell comp-aspect">Output Utama</div><div class="comp-cell comp-nha">Individual Risk (IR) /yr</div><div class="comp-cell comp-hha">IR + Consequence Zone (m)</div></div>
+          <div class="comp-row"><div class="comp-cell comp-aspect">Kriteria Acceptable</div><div class="comp-cell comp-nha">&lt; 10⁻⁶ /yr</div><div class="comp-cell comp-hha">&lt; 10⁻⁶ /yr</div></div>
+          <div class="comp-row" style="padding-bottom:10px"><div class="comp-cell comp-aspect">Dokumen Output</div><div class="comp-cell comp-nha">QRA Register + Risk Matrix</div><div class="comp-cell comp-hha">QRA Register + Consequence Plot + PHAST Report</div></div>
+        </div>
+
+      </div><!-- /hha-content -->
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app-body -->
+
+<script>
+function switchType(type) {
+  const nhaContent = document.getElementById('nha-content');
+  const hhaContent = document.getElementById('hha-content');
+  const btnNha = document.getElementById('btn-nha');
+  const btnHha = document.getElementById('btn-hha');
+  const noteEl = document.getElementById('type-note-txt');
+
+  if (type === 'nha') {
+    nhaContent.style.display = 'block';
+    hhaContent.style.display = 'none';
+    btnNha.className = 'type-btn nha-active';
+    btnHha.className = 'type-btn';
+    noteEl.textContent = 'NHA — Non-Hydrocarbon Scenarios (Ship Collision, Drop Object, Transport Risk)';
+    noteEl.style.color = '#2EC4B6';
+  } else {
+    nhaContent.style.display = 'none';
+    hhaContent.style.display = 'block';
+    btnNha.className = 'type-btn';
+    btnHha.className = 'type-btn hha-active';
+    noteEl.textContent = 'HHA — Hydrocarbon Scenarios (Jet Fire, Flash Fire, Pool Fire, Explosion VCE)';
+    noteEl.style.color = '#E85050';
+  }
+}
+</script>
+
+</body>
+</html>
