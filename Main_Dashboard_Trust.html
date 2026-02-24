@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>TRUST — Main Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@700&family=Share+Tech+Mono&family=Exo+2:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg:     #0D1117;
+  --dark:   #13181F;
+  --mid:    #1A2130;
+  --panel:  #1E2638;
+  --card:   #161D2A;
+  --border: #2A3650;
+  --bord2:  #1A2235;
+  --txt:    #CDD5E0;
+  --dim:    #7A8A9E;
+  --mute:   #445060;
+  --blue:  #4A9EE8;
+  --lime:  #A8D636;
+  --org:   #E8920C;
+  --red:   #E85050;
+  --yel:   #E8C040;
+  --teal:  #2EC4B6;
+  --pur:   #8B5CF6;
+}
+body {
+  font-family: 'Exo 2', sans-serif;
+  background: var(--bg); color: var(--txt);
+  display: flex; flex-direction: column;
+  height: 100vh; overflow: hidden;
+}
+
+/* ── TOP NAV ── */
+.topnav {
+  height: 50px; background: var(--dark);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; flex-shrink: 0;
+}
+.hamburger {
+  width: 50px; height: 50px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: var(--dim); cursor: pointer;
+  border-right: 1px solid var(--border);
+}
+.logo {
+  padding: 0 16px; height: 50px;
+  display: flex; align-items: center; gap: 9px;
+  border-right: 1px solid var(--border);
+}
+.logo-word { font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 700; line-height: 1; }
+.logo-word .t { color: var(--blue); }
+.logo-word .r { color: var(--txt); }
+.logo-sub { font-size: 7px; color: var(--mute); line-height: 1.3; max-width: 90px; }
+.nav-links { display: flex; align-items: center; height: 50px; padding: 0 6px; flex: 1; }
+.nl {
+  display: flex; align-items: center; gap: 6px;
+  padding: 0 13px; height: 50px;
+  font-size: 12.5px; font-weight: 500; color: var(--dim);
+  cursor: pointer; border-bottom: 2px solid transparent;
+  transition: all .15s; white-space: nowrap;
+}
+.nl:hover { color: var(--txt); }
+.nl.active { color: var(--blue); border-bottom-color: var(--blue); }
+.nav-right {
+  margin-left: auto; display: flex; align-items: center; gap: 8px; padding-right: 14px;
+}
+.nav-notif {
+  width: 34px; height: 34px; border-radius: 6px;
+  border: 1px solid var(--border); background: var(--mid);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; cursor: pointer; position: relative;
+}
+.notif-dot {
+  position: absolute; top: 6px; right: 6px;
+  width: 7px; height: 7px; background: var(--red);
+  border-radius: 50%; border: 1.5px solid var(--dark);
+}
+.nav-admin {
+  padding: 6px 14px; border: 1px solid var(--border);
+  border-radius: 5px; font-size: 12px; font-weight: 600;
+  color: var(--txt); background: var(--mid);
+  display: flex; align-items: center; gap: 7px;
+}
+
+/* ── APP BODY ── */
+.app-body { display: flex; flex: 1; overflow: hidden; }
+
+/* ── ICON SIDEBAR ── */
+.sidebar {
+  width: 88px; background: var(--dark);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  align-items: center; overflow-y: auto; flex-shrink: 0;
+}
+.sidebar::-webkit-scrollbar { width: 0; }
+
+.mod {
+  width: 100%; padding: 11px 6px 10px;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 5px; cursor: pointer;
+  border-left: 3px solid transparent;
+  border-bottom: 1px solid var(--bord2);
+  transition: all .15s; color: var(--mute); position: relative;
+}
+.mod:hover { background: rgba(255,255,255,.04); color: var(--dim); }
+.mod.sel-blue  { background: rgba(74,158,232,.1);  border-left-color: var(--blue);  color: var(--blue); }
+.mod.sel-teal  { background: rgba(46,196,182,.1);  border-left-color: var(--teal);  color: var(--teal); }
+.mod.sel-pur   { background: rgba(139,92,246,.1);  border-left-color: var(--pur);   color: var(--pur); }
+.mod.sel-lime  { background: rgba(168,214,54,.1);  border-left-color: var(--lime);  color: var(--lime); }
+.mod.sel-org   { background: rgba(232,146,12,.1);  border-left-color: var(--org);   color: var(--org); }
+.mod .arrow { position: absolute; right: 5px; top: 50%; transform: translateY(-50%); font-size: 9px; color: var(--mute); opacity: .6; }
+.mod-ico { font-size: 20px; line-height: 1; }
+.mod-lbl { font-size: 8px; font-weight: 600; letter-spacing: .3px; text-align: center; line-height: 1.2; max-width: 76px; color: inherit; }
+.mod-badge {
+  position: absolute; top: 6px; right: 6px;
+  min-width: 15px; height: 15px; border-radius: 8px;
+  font-size: 8px; font-weight: 700; color: white;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 3px; font-family: 'Share Tech Mono', monospace;
+}
+.mod-divider { width: 55px; height: 1px; background: var(--border); margin: 4px 0; flex-shrink: 0; }
+.mod-section { font-size: 7px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--mute); text-align: center; padding: 3px 0 2px; }
+
+/* ── ASSET TREE ── */
+.tree-panel {
+  width: 235px; background: var(--dark);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; flex-shrink: 0;
+}
+.tree-hdr {
+  padding: 7px 10px; border-bottom: 1px solid var(--border);
+  background: var(--mid); display: flex; align-items: center; justify-content: space-between;
+}
+.tree-hdr-title { font-size: 12px; font-weight: 600; }
+.thbtns { display: flex; gap: 3px; }
+.thb {
+  width: 24px; height: 24px; border-radius: 4px;
+  border: 1px solid var(--border); background: var(--dark);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: var(--dim); cursor: pointer;
+}
+.tree { overflow-y: auto; flex: 1; }
+.tree::-webkit-scrollbar { width: 3px; }
+.tree::-webkit-scrollbar-thumb { background: var(--border); }
+.tn { display: flex; align-items: center; gap: 5px; padding: 5px 8px; font-size: 11.5px; cursor: pointer; color: var(--dim); }
+.tn:hover { background: rgba(255,255,255,.04); }
+.tn.sel { background: rgba(46,196,182,.1); color: var(--teal); }
+.tn .arr { font-size: 7px; width: 10px; color: var(--mute); flex-shrink: 0; }
+.i1{padding-left:20px} .i2{padding-left:34px} .i3{padding-left:48px}
+
+/* ── MAIN ── */
+.main { flex: 1; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; }
+.main::-webkit-scrollbar { width: 4px; }
+.main::-webkit-scrollbar-thumb { background: var(--border); }
+
+/* ── PAGE HEADER ── */
+.page-hdr {
+  background: var(--mid); border-bottom: 1px solid var(--border);
+  padding: 10px 18px; display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.page-hdr-left h2 { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+.page-hdr-left p { font-size: 10.5px; color: var(--dim); }
+.page-hdr-left p span { color: var(--org); font-weight: 600; }
+.page-hdr-right { display: flex; gap: 7px; }
+.hbtn {
+  display: flex; align-items: center; gap: 5px;
+  padding: 6px 13px; border-radius: 4px; font-size: 11px; font-weight: 600;
+  border: 1px solid var(--border); background: var(--panel); color: var(--dim); cursor: pointer;
+}
+.hbtn.p { background: var(--org); border-color: var(--org); color: white; }
+
+/* ── ALERT ── */
+.alert-bar {
+  background: rgba(232,80,80,.08); border-bottom: 1px solid rgba(232,80,80,.2);
+  padding: 8px 18px; display: flex; align-items: center; gap: 10px;
+  font-size: 12px; color: #F08080; flex-shrink: 0;
+}
+.alert-bar strong { color: var(--red); }
+.alert-lnk { margin-left: auto; color: var(--red); font-size: 11px; font-weight: 600; cursor: pointer; }
+
+/* ── CONTENT ── */
+.content { padding: 14px 16px; flex: 1; overflow-y: auto; }
+.content::-webkit-scrollbar { width: 4px; }
+.content::-webkit-scrollbar-thumb { background: var(--border); }
+
+/* WELCOME */
+.welcome {
+  background: linear-gradient(135deg, #1A2A45 0%, #1E3055 100%);
+  border: 1px solid #2A4070; border-radius: 8px;
+  padding: 18px 22px; margin-bottom: 14px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: relative; overflow: hidden;
+}
+.welcome::before {
+  content: ''; position: absolute; right: -30px; top: -30px;
+  width: 180px; height: 180px; border-radius: 50%;
+  background: rgba(232,146,12,.08);
+}
+.welcome-left h3 { font-size: 17px; font-weight: 700; margin-bottom: 3px; }
+.welcome-left p { font-size: 11.5px; color: var(--dim); }
+.welcome-left p strong { color: var(--org); }
+.welcome-stats { display: flex; gap: 20px; position: relative; z-index: 1; }
+.wstat { text-align: center; }
+.wstat .v { font-size: 26px; font-weight: 700; font-family: 'Share Tech Mono', monospace; line-height: 1; }
+.wstat .l { font-size: 9px; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: .7px; margin-top: 3px; }
+.wdiv { width: 1px; background: rgba(255,255,255,.1); align-self: stretch; }
+
+/* SECTION LABEL */
+.sec-lbl {
+  font-size: 9.5px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1.2px; color: var(--mute);
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 10px;
+}
+.sec-lbl::after { content: ''; flex: 1; height: 1px; background: var(--bord2); }
+.sec-lbl .sdot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+/* KPI CARDS */
+.kpi-row { display: grid; grid-template-columns: repeat(6,1fr); gap: 9px; margin-bottom: 14px; }
+.kc {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 6px; padding: 12px 12px 11px;
+  position: relative; overflow: hidden; cursor: pointer;
+}
+.kc:hover { border-color: rgba(255,255,255,.15); }
+.kc-top { position: absolute; top:0; left:0; right:0; height: 2px; }
+.kc-icon { font-size: 16px; margin-bottom: 7px; display: block; }
+.kc-val { font-size: 22px; font-weight: 700; font-family: 'Share Tech Mono', monospace; line-height: 1; margin-bottom: 3px; }
+.kc-lbl { font-size: 9px; color: var(--mute); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 5px; }
+.kc-sub { font-size: 10px; display: flex; align-items: center; gap: 4px; }
+
+/* MAIN GRID */
+.grid-main { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.grid-2    { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.grid-32   { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; margin-bottom: 12px; }
+.grid-23   { display: grid; grid-template-columns: 1fr 2fr; gap: 12px; margin-bottom: 12px; }
+
+/* PANEL */
+.panel { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.ph { background: var(--panel); border-bottom: 1px solid var(--border); padding: 8px 13px; display: flex; align-items: center; justify-content: space-between; }
+.pt { font-size: 12px; font-weight: 600; color: var(--txt); display: flex; align-items: center; gap: 6px; }
+.ptag { font-size: 9px; padding: 2px 7px; border-radius: 10px; font-weight: 700; }
+.pa { font-size: 10.5px; color: var(--blue); cursor: pointer; font-weight: 500; }
+.pb { padding: 10px 13px; }
+
+/* MODULE STATUS TILES */
+.mod-tiles { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 12px 13px; }
+.mtile {
+  border-radius: 6px; padding: 12px 11px;
+  cursor: pointer; border: 1px solid transparent;
+  transition: opacity .12s; position: relative; overflow: hidden;
+}
+.mtile:hover { opacity: .82; }
+.mtile::after {
+  content: '›'; position: absolute; right: 8px; bottom: 8px;
+  font-size: 14px; opacity: .4;
+}
+.mt-tag  { font-size: 7.5px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; opacity: .55; margin-bottom: 4px; }
+.mt-ico  { font-size: 18px; margin-bottom: 6px; }
+.mt-name { font-size: 10.5px; font-weight: 700; margin-bottom: 8px; line-height: 1.3; }
+.mt-num  { font-size: 22px; font-weight: 700; font-family: 'Share Tech Mono', monospace; line-height: 1; }
+.mt-sub  { font-size: 9px; opacity: .5; margin-top: 2px; }
+
+/* COMPLIANCE BARS */
+.cr  { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.cl2 { font-size: 10.5px; color: var(--dim); width: 130px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cb  { flex: 1; height: 4px; background: var(--mid); border-radius: 3px; overflow: hidden; }
+.cf  { height: 100%; border-radius: 3px; }
+.cv2 { font-size: 10px; font-family: 'Share Tech Mono', monospace; font-weight: 600; width: 32px; text-align: right; }
+
+/* TABLE */
+.dt { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+.dt th { background: var(--panel); color: var(--dim); font-weight: 600; padding: 7px 11px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: .5px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.dt td { padding: 7px 11px; border-bottom: 1px solid var(--bord2); color: var(--dim); vertical-align: middle; }
+.dt tr:hover td { background: rgba(255,255,255,.02); }
+.dt tr:last-child td { border-bottom: none; }
+.dt td.hi { color: var(--txt); font-weight: 500; }
+
+/* BADGES */
+.badge { display: inline-flex; align-items: center; padding: 2px 7px; border-radius: 3px; font-size: 9.5px; font-weight: 700; white-space: nowrap; }
+.b-r{background:rgba(232,80,80,.14);  color:#F08080;       border:1px solid rgba(232,80,80,.3);}
+.b-y{background:rgba(232,192,64,.14); color:var(--yel);    border:1px solid rgba(232,192,64,.3);}
+.b-g{background:rgba(168,214,54,.14); color:var(--lime);   border:1px solid rgba(168,214,54,.3);}
+.b-b{background:rgba(74,158,232,.14); color:var(--blue);   border:1px solid rgba(74,158,232,.3);}
+.b-o{background:rgba(232,146,12,.14); color:var(--org);    border:1px solid rgba(232,146,12,.3);}
+.b-t{background:rgba(46,196,182,.14); color:var(--teal);   border:1px solid rgba(46,196,182,.3);}
+.b-p{background:rgba(139,92,246,.14); color:var(--pur);    border:1px solid rgba(139,92,246,.3);}
+.b-d{background:rgba(255,255,255,.05);color:var(--mute);   border:1px solid var(--border);}
+
+/* SCHEDULE */
+.si { display: flex; align-items: center; gap: 9px; padding: 8px 0; border-bottom: 1px solid var(--bord2); }
+.si:last-child { border-bottom: none; }
+.sd { width: 38px; height: 38px; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; }
+.sd .d { font-size: 15px; font-weight: 700; font-family: 'Share Tech Mono', monospace; line-height: 1; }
+.sd .m { font-size: 7.5px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; }
+.sin { flex: 1; overflow: hidden; }
+.sn { font-size: 11px; font-weight: 600; color: var(--txt); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ss { font-size: 9.5px; color: var(--mute); }
+
+/* ACTIVITY */
+.ai { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--bord2); }
+.ai:last-child { border-bottom: none; }
+.aln { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 12px; }
+.adot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.aconn { width: 1px; flex: 1; background: var(--bord2); margin-top: 3px; }
+.ac { flex: 1; }
+.at { font-size: 11.5px; font-weight: 600; color: var(--txt); margin-bottom: 2px; }
+.am { font-size: 10px; color: var(--mute); }
+.ats { font-size: 9.5px; color: var(--mute); font-family: 'Share Tech Mono', monospace; white-space: nowrap; }
+
+/* RISK SUMMARY */
+.risk-boxes { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+.rbox { border-radius: 6px; padding: 12px; text-align: center; }
+.rbox .rv { font-size: 26px; font-weight: 700; font-family: 'Share Tech Mono', monospace; line-height: 1; }
+.rbox .rl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; margin-top: 3px; }
+
+/* MOC ITEMS */
+.moc-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--bord2); }
+.moc-item:last-child { border-bottom: none; }
+.moc-num {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+}
+.moc-info { flex: 1; }
+.moc-title { font-size: 11.5px; font-weight: 600; color: var(--txt); margin-bottom: 3px; }
+.moc-meta { font-size: 10px; color: var(--mute); display: flex; gap: 10px; }
+
+/* MINI CHART (CSS bar chart) */
+.bar-chart { display: flex; align-items: flex-end; gap: 6px; height: 80px; padding: 0 4px; }
+.bar-col { display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1; }
+.bar-fill { width: 100%; border-radius: 3px 3px 0 0; transition: height .3s; min-height: 4px; }
+.bar-label { font-size: 8.5px; color: var(--mute); text-align: center; white-space: nowrap; }
+.bar-val { font-size: 8.5px; color: var(--dim); font-family: 'Share Tech Mono', monospace; }
+
+/* STATUS ROW */
+.sr { display: flex; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--bord2); gap: 10px; }
+.sr:last-child { border-bottom: none; }
+.sr-left { flex: 1; }
+.sr-name { font-size: 11.5px; font-weight: 600; color: var(--txt); }
+.sr-sub  { font-size: 10px; color: var(--mute); }
+.sr-right { display: flex; align-items: center; gap: 7px; }
+.sr-ir { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--dim); }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <div class="hamburger">☰</div>
+  <div class="logo">
+    <div class="logo-word"><span class="t">T</span><span class="r">RUST</span></div>
+    <div class="logo-sub">Total Reliability & Unified System for Tracking Asset Integrity</div>
+  </div>
+  <div class="nav-links">
+    <div class="nl active">⊞ Dashboard</div>
+    <div class="nl">⚠ Anomaly</div>
+    <div class="nl">⬡ Corrosion</div>
+    <div class="nl">⊙ IOW</div>
+    <div class="nl">◫ IMR</div>
+    <div class="nl">↑ Export</div>
+    <div class="nl">↓ Import</div>
+    <div class="nl">⊙ SIMOM</div>
+  </div>
+  <div class="nav-right">
+    <div class="nav-notif">🔔<div class="notif-dot"></div></div>
+    <div class="nav-admin">⚙ Administrator</div>
+  </div>
+</nav>
+
+<div class="app-body">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="mod sel-blue">
+      <span class="arrow">›</span>
+      <div class="mod-ico">⊞</div>
+      <div class="mod-lbl">Dashboard</div>
+    </div>
+    <div class="mod">
+      <span class="arrow">›</span>
+      <div class="mod-ico">≡</div>
+      <div class="mod-lbl">Asset...</div>
+    </div>
+    <div class="mod">
+      <span class="arrow">›</span>
+      <div class="mod-ico">🔷</div>
+      <div class="mod-lbl">Integrity</div>
+    </div>
+    <div class="mod">
+      <span class="arrow">›</span>
+      <div class="mod-ico">⚙</div>
+      <div class="mod-lbl">Reliabil...</div>
+      <div class="mod-badge" style="background:var(--red)">2</div>
+    </div>
+    <div class="mod">
+      <span class="arrow">›</span>
+      <div class="mod-ico">🛡</div>
+      <div class="mod-lbl">Safety I.</div>
+    </div>
+    <div class="mod">
+      <span class="arrow">›</span>
+      <div class="mod-ico">📋</div>
+      <div class="mod-lbl">Insp. Pl.</div>
+    </div>
+    <div class="mod">
+      <span class="arrow">›</span>
+      <div class="mod-ico">◈</div>
+      <div class="mod-lbl">Integrit...</div>
+    </div>
+    <div class="mod-divider"></div>
+    <div class="mod-section">PSAIMS</div>
+    <div class="mod">
+      <span class="arrow">›</span>
+      <div class="mod-ico">🔒</div>
+      <div class="mod-lbl">SECE & Perf. Std</div>
+      <div class="mod-badge" style="background:var(--red)">3</div>
+    </div>
+    <div class="mod">
+      <span class="arrow">›</span>
+      <div class="mod-ico">⚡</div>
+      <div class="mod-lbl">REL Mgmt</div>
+      <div class="mod-badge" style="background:var(--red)">7</div>
+    </div>
+    <div class="mod">
+      <span class="arrow">›</span>
+      <div class="mod-ico">✅</div>
+      <div class="mod-lbl">Audit & Mon.</div>
+      <div class="mod-badge" style="background:var(--org)">5</div>
+    </div>
+    <div class="mod">
+      <span class="arrow">›</span>
+      <div class="mod-ico">↻</div>
+      <div class="mod-lbl">Mgmt of Change</div>
+      <div class="mod-badge" style="background:var(--org)">4</div>
+    </div>
+    <div class="mod">
+      <span class="arrow">›</span>
+      <div class="mod-ico">◉</div>
+      <div class="mod-lbl">QRA NHA+HHA</div>
+    </div>
+  </div>
+
+  <!-- ASSET TREE -->
+  <div class="tree-panel">
+    <div class="tree-hdr">
+      <div class="tree-hdr-title">Asset Register</div>
+      <div class="thbtns">
+        <div class="thb">⌂</div><div class="thb">⟳</div><div class="thb">✎</div><div class="thb">⌕</div>
+      </div>
+    </div>
+    <div class="tree">
+      <div class="tn"><span class="arr">▼</span>🏢 LBM</div>
+      <div class="tn i1"><span class="arr">▼</span>🚢 FSRU Lampung</div>
+      <div class="tn i2"><span class="arr">▼</span>📁 Tower Yoke Mooring</div>
+      <div class="tn i3 sel"><span class="arr"> </span>⚙ ERC System</div>
+      <div class="tn i3"><span class="arr"> </span>⚙ QCDC System</div>
+      <div class="tn i3"><span class="arr"> </span>⚙ ESD System</div>
+      <div class="tn i2"><span class="arr">▼</span>📁 Subsea Pipeline</div>
+      <div class="tn i3"><span class="arr"> </span>⚙ ESDV-001</div>
+      <div class="tn i3"><span class="arr"> </span>⚙ Pipeline Leak Det.</div>
+      <div class="tn i2"><span class="arr">▼</span>📁 Onshore Receiving</div>
+      <div class="tn i3"><span class="arr"> </span>⚙ PIG Receiver</div>
+      <div class="tn i3"><span class="arr"> </span>⚙ Water Bath Heater</div>
+      <div class="tn i3"><span class="arr"> </span>⚙ Pressure Letdown</div>
+      <div class="tn i3"><span class="arr"> </span>⚙ Metering Skid</div>
+      <div class="tn i3"><span class="arr"> </span>⚗ Odorizer Tank (THT)</div>
+      <div class="tn i1"><span class="arr">▶</span>📁 GREEN-ZONE</div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+
+    <!-- PAGE HEADER -->
+    <div class="page-hdr">
+      <div class="page-hdr-left">
+        <h2>⊞ Main Dashboard — PSAIMS Overview</h2>
+        <p>PT PGN LNG Indonesia · FSRU Lampung · <strong>3 item memerlukan perhatian hari ini</strong></p>
+      </div>
+      <div class="page-hdr-right">
+        <div class="hbtn">📅 Senin, 23 Feb 2026</div>
+        <div class="hbtn">↗ Export Report</div>
+        <div class="hbtn p">🔄 Refresh</div>
+      </div>
+    </div>
+
+    <!-- ALERT -->
+    <div class="alert-bar">
+      ⚠ <strong>ALERT:</strong> 3 SECE Overdue · 1 Audit Finding Major NC · 2 MoC High Risk pending approval
+      <span class="alert-lnk">Lihat Semua →</span>
+    </div>
+
+    <div class="content">
+
+      <!-- WELCOME BANNER -->
+      <div class="welcome">
+        <div class="welcome-left">
+          <h3>Selamat Datang, Ahmad Muhar 👋</h3>
+          <p>FSRU Lampung beroperasi normal. <strong>3 item kritis</strong> perlu diselesaikan hari ini.</p>
+        </div>
+        <div class="welcome-stats">
+          <div class="wstat">
+            <div class="v" style="color:var(--lime)">87%</div>
+            <div class="l">PSAIMS Score</div>
+          </div>
+          <div class="wdiv"></div>
+          <div class="wstat">
+            <div class="v" style="color:var(--teal)">42</div>
+            <div class="l">Total SECE</div>
+          </div>
+          <div class="wdiv"></div>
+          <div class="wstat">
+            <div class="v" style="color:var(--red)">5</div>
+            <div class="l">Open Finding</div>
+          </div>
+          <div class="wdiv"></div>
+          <div class="wstat">
+            <div class="v" style="color:var(--org)">4</div>
+            <div class="l">MoC Pending</div>
+          </div>
+          <div class="wdiv"></div>
+          <div class="wstat">
+            <div class="v" style="color:var(--yel)">18</div>
+            <div class="l">QRA Skenario</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI ROW — 6 cards -->
+      <div class="sec-lbl"><div class="sdot" style="background:var(--org)"></div>Key Performance Indicators — PSAIMS</div>
+      <div class="kpi-row">
+        <div class="kc">
+          <div class="kc-top" style="background:var(--teal)"></div>
+          <span class="kc-icon">🔒</span>
+          <div class="kc-val" style="color:var(--teal)">39<span style="font-size:12px;opacity:.4">/42</span></div>
+          <div class="kc-lbl">SECE Verified</div>
+          <div class="kc-sub" style="color:var(--red)">↓ 3 overdue</div>
+        </div>
+        <div class="kc">
+          <div class="kc-top" style="background:var(--pur)"></div>
+          <span class="kc-icon">⚡</span>
+          <div class="kc-val" style="color:var(--pur)">12</div>
+          <div class="kc-lbl">Active Bad Actors</div>
+          <div class="kc-sub" style="color:var(--red)">↑ 2 baru bulan ini</div>
+        </div>
+        <div class="kc">
+          <div class="kc-top" style="background:var(--lime)"></div>
+          <span class="kc-icon">✓</span>
+          <div class="kc-val" style="color:var(--lime)">87<span style="font-size:12px;opacity:.4">%</span></div>
+          <div class="kc-lbl">PSAIMS Compliance</div>
+          <div class="kc-sub" style="color:var(--lime)">↑ +4% dari Q3</div>
+        </div>
+        <div class="kc">
+          <div class="kc-top" style="background:var(--red)"></div>
+          <span class="kc-icon">⚑</span>
+          <div class="kc-val" style="color:var(--red)">5</div>
+          <div class="kc-lbl">Open Findings</div>
+          <div class="kc-sub" style="color:var(--red)">1 Major NC overdue</div>
+        </div>
+        <div class="kc">
+          <div class="kc-top" style="background:var(--org)"></div>
+          <span class="kc-icon">↻</span>
+          <div class="kc-val" style="color:var(--org)">4</div>
+          <div class="kc-lbl">MoC Pending</div>
+          <div class="kc-sub" style="color:var(--org)">2 high risk</div>
+        </div>
+        <div class="kc">
+          <div class="kc-top" style="background:var(--blue)"></div>
+          <span class="kc-icon">◉</span>
+          <div class="kc-val" style="color:var(--blue)">2</div>
+          <div class="kc-lbl">QRA Unacceptable</div>
+          <div class="kc-sub" style="color:var(--red)">Perlu tindakan</div>
+        </div>
+      </div>
+
+      <!-- MODULE STATUS TILES -->
+      <div class="sec-lbl"><div class="sdot" style="background:var(--blue)"></div>Status per Modul PSAIMS</div>
+      <div class="panel" style="margin-bottom:14px">
+        <div class="ph">
+          <div class="pt">⊞ Modul Overview — 5 Modules Active</div>
+          <div class="pa">Detail →</div>
+        </div>
+        <div class="mod-tiles">
+          <div class="mtile" style="background:rgba(46,196,182,.08);border-color:rgba(46,196,182,.2)">
+            <div class="mt-tag" style="color:var(--teal)">Modul 1 · Core</div>
+            <div class="mt-ico">🔒</div>
+            <div class="mt-name" style="color:var(--teal)">SECE & Performance Standard</div>
+            <div class="mt-num" style="color:var(--teal)">39</div>
+            <div class="mt-sub" style="color:var(--teal)">dari 42 SECE verified · 3 overdue</div>
+          </div>
+          <div class="mtile" style="background:rgba(139,92,246,.08);border-color:rgba(139,92,246,.2)">
+            <div class="mt-tag" style="color:var(--pur)">Modul 2 · Core</div>
+            <div class="mt-ico">⚡</div>
+            <div class="mt-name" style="color:var(--pur)">REL Management</div>
+            <div class="mt-num" style="color:var(--pur)">3</div>
+            <div class="mt-sub" style="color:var(--pur)">RCFA in progress · 12 bad actor aktif</div>
+          </div>
+          <div class="mtile" style="background:rgba(168,214,54,.08);border-color:rgba(168,214,54,.2)">
+            <div class="mt-tag" style="color:var(--lime)">Modul 3 · Core</div>
+            <div class="mt-ico">✅</div>
+            <div class="mt-name" style="color:var(--lime)">Audit & Monitoring (SUPREME)</div>
+            <div class="mt-num" style="color:var(--lime)">87%</div>
+            <div class="mt-sub" style="color:var(--lime)">compliance · 5 open findings</div>
+          </div>
+          <div class="mtile" style="background:rgba(232,146,12,.08);border-color:rgba(232,146,12,.2)">
+            <div class="mt-tag" style="color:var(--org)">Modul 4 · Optional</div>
+            <div class="mt-ico">↻</div>
+            <div class="mt-name" style="color:var(--org)">Management of Change</div>
+            <div class="mt-num" style="color:var(--org)">4</div>
+            <div class="mt-sub" style="color:var(--org)">pending approval · 2 high risk</div>
+          </div>
+          <div class="mtile" style="background:rgba(74,158,232,.08);border-color:rgba(74,158,232,.2)">
+            <div class="mt-tag" style="color:var(--blue)">Modul 5 · Optional</div>
+            <div class="mt-ico">◉</div>
+            <div class="mt-name" style="color:var(--blue)">QRA — NHA + HHA</div>
+            <div class="mt-num" style="color:var(--blue)">18</div>
+            <div class="mt-sub" style="color:var(--blue)">skenario · 2 unacceptable</div>
+          </div>
+          <!-- System Health -->
+          <div class="mtile" style="background:var(--mid);border-color:var(--border)">
+            <div class="mt-tag" style="color:var(--mute)">Overall</div>
+            <div class="mt-ico">🏆</div>
+            <div class="mt-name" style="color:var(--txt)">System Health</div>
+            <div class="mt-num" style="color:var(--lime)">GOOD</div>
+            <div class="mt-sub" style="color:var(--mute)">87% overall compliance</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 3: Compliance + Upcoming + Activity -->
+      <div class="sec-lbl"><div class="sdot" style="background:var(--lime)"></div>Analitik & Monitoring</div>
+      <div class="grid-main">
+
+        <!-- PSAIMS Compliance 18 Elemen -->
+        <div class="panel">
+          <div class="ph">
+            <div class="pt">◈ PSAIMS Compliance — 18 Elemen <span class="ptag b-g">87%</span></div>
+            <div class="pa">Detail →</div>
+          </div>
+          <div class="pb">
+            <div class="cr"><div class="cl2">1. Kepemimpinan PS</div><div class="cb"><div class="cf" style="width:95%;background:var(--lime)"></div></div><div class="cv2" style="color:var(--lime)">95%</div></div>
+            <div class="cr"><div class="cl2">3. Kepatuhan Regulasi</div><div class="cb"><div class="cf" style="width:88%;background:var(--lime)"></div></div><div class="cv2" style="color:var(--lime)">88%</div></div>
+            <div class="cr"><div class="cl2">6. Info Keselamatan</div><div class="cb"><div class="cf" style="width:92%;background:var(--lime)"></div></div><div class="cv2" style="color:var(--lime)">92%</div></div>
+            <div class="cr"><div class="cl2">7. Analisis Bahaya</div><div class="cb"><div class="cf" style="width:90%;background:var(--lime)"></div></div><div class="cv2" style="color:var(--lime)">90%</div></div>
+            <div class="cr"><div class="cl2">10. Integritas Aset</div><div class="cb"><div class="cf" style="width:78%;background:var(--yel)"></div></div><div class="cv2" style="color:var(--yel)">78%</div></div>
+            <div class="cr"><div class="cl2">11. Mgmt Perubahan</div><div class="cb"><div class="cf" style="width:72%;background:var(--yel)"></div></div><div class="cv2" style="color:var(--yel)">72%</div></div>
+            <div class="cr"><div class="cl2">13. Tanggap Darurat</div><div class="cb"><div class="cf" style="width:85%;background:var(--lime)"></div></div><div class="cv2" style="color:var(--lime)">85%</div></div>
+            <div class="cr"><div class="cl2">15. Kinerja PS</div><div class="cb"><div class="cf" style="width:65%;background:var(--org)"></div></div><div class="cv2" style="color:var(--org)">65%</div></div>
+            <div class="cr"><div class="cl2">16. Belajar Kejadian</div><div class="cb"><div class="cf" style="width:80%;background:var(--lime)"></div></div><div class="cv2" style="color:var(--lime)">80%</div></div>
+            <div class="cr"><div class="cl2">17. Audit Internal</div><div class="cb"><div class="cf" style="width:83%;background:var(--lime)"></div></div><div class="cv2" style="color:var(--lime)">83%</div></div>
+          </div>
+        </div>
+
+        <!-- Upcoming Assurance -->
+        <div class="panel">
+          <div class="ph">
+            <div class="pt">📅 Upcoming Assurance</div>
+            <div class="pa">Kalender →</div>
+          </div>
+          <div class="pb" style="padding:8px 13px">
+            <div class="si">
+              <div class="sd" style="background:rgba(232,80,80,.15);color:var(--red)"><div class="d">25</div><div class="m">FEB</div></div>
+              <div class="sin"><div class="sn">ESDV-001 Verification</div><div class="ss">Subsea Pipeline · Quarterly</div></div>
+              <span class="badge b-r">OVERDUE</span>
+            </div>
+            <div class="si">
+              <div class="sd" style="background:rgba(232,192,64,.15);color:var(--yel)"><div class="d">28</div><div class="m">FEB</div></div>
+              <div class="sin"><div class="sn">PSV-201 Function Test</div><div class="ss">Pressure Letdown · Annual</div></div>
+              <span class="badge b-y">3 hari</span>
+            </div>
+            <div class="si">
+              <div class="sd" style="background:rgba(74,158,232,.15);color:var(--blue)"><div class="d">05</div><div class="m">MAR</div></div>
+              <div class="sin"><div class="sn">ESD System Test</div><div class="ss">Tower Yoke · Semi-Annual</div></div>
+              <span class="badge b-b">10 hr</span>
+            </div>
+            <div class="si">
+              <div class="sd" style="background:rgba(168,214,54,.12);color:var(--lime)"><div class="d">12</div><div class="m">MAR</div></div>
+              <div class="sin"><div class="sn">Gas Detector Calibration</div><div class="ss">Onshore · Monthly</div></div>
+              <span class="badge b-g">17 hr</span>
+            </div>
+            <div class="si">
+              <div class="sd" style="background:rgba(232,146,12,.12);color:var(--org)"><div class="d">20</div><div class="m">MAR</div></div>
+              <div class="sin"><div class="sn">THT Odorizer Inspection</div><div class="ss">Odorizer Tank · Semi-Annual</div></div>
+              <span class="badge b-o">25 hr</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="panel">
+          <div class="ph">
+            <div class="pt">⟳ Recent Activity</div>
+            <div class="pa">Log →</div>
+          </div>
+          <div class="pb" style="padding:6px 13px">
+            <div class="ai">
+              <div class="aln"><div class="adot" style="background:var(--lime)"></div><div class="aconn"></div></div>
+              <div class="ac"><div class="at">PSV-301 berhasil diverifikasi</div><div class="am">SECE · Pressure Letdown · Ahmad Muhar</div></div>
+              <div class="ats">2j lalu</div>
+            </div>
+            <div class="ai">
+              <div class="aln"><div class="adot" style="background:var(--org)"></div><div class="aconn"></div></div>
+              <div class="ac"><div class="at">MoC baru: Penggantian CV-101</div><div class="am">Technical · High Risk · Menunggu Approval</div></div>
+              <div class="ats">5j lalu</div>
+            </div>
+            <div class="ai">
+              <div class="aln"><div class="adot" style="background:var(--red)"></div><div class="aconn"></div></div>
+              <div class="ac"><div class="at">Bad Actor baru: Pump P-201A</div><div class="am">REL · Failure 4x dalam 3 bulan</div></div>
+              <div class="ats">Kemarin</div>
+            </div>
+            <div class="ai">
+              <div class="aln"><div class="adot" style="background:var(--pur)"></div><div class="aconn"></div></div>
+              <div class="ac"><div class="at">RCFA selesai: Valve V-115</div><div class="am">Root cause: korosi internal · Approved</div></div>
+              <div class="ats">2 hr lalu</div>
+            </div>
+            <div class="ai">
+              <div class="aln"><div class="adot" style="background:var(--blue)"></div></div>
+              <div class="ac"><div class="at">QRA Update: Drop Object IR naik</div><div class="am">1.5×10⁻⁴ → Unacceptable · Onshore</div></div>
+              <div class="ats">4 hr lalu</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ROW 4: Open Findings + MoC + QRA Risk -->
+      <div class="grid-main">
+
+        <!-- Open Audit Findings -->
+        <div class="panel">
+          <div class="ph">
+            <div class="pt">⚑ Open Audit Findings <span class="ptag b-r">5 OPEN</span></div>
+            <div class="pa">Semua →</div>
+          </div>
+          <table class="dt">
+            <thead><tr><th>Finding</th><th>Elemen</th><th>PIC</th><th>Due</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="hi">ERP belum diupdate sejak 2023</td>
+                <td><span class="badge b-d">El.13</span></td>
+                <td style="font-size:10.5px">Supt. HSE</td>
+                <td style="font-family:monospace;font-size:10.5px;color:var(--yel)">30 Apr</td>
+                <td><span class="badge b-y">Progress</span></td>
+              </tr>
+              <tr>
+                <td class="hi">HAZOP action item overdue</td>
+                <td><span class="badge b-d">El.7</span></td>
+                <td style="font-size:10.5px">PS Engineer</td>
+                <td style="font-family:monospace;font-size:10.5px;color:var(--red)">28 Feb</td>
+                <td><span class="badge b-r">Overdue</span></td>
+              </tr>
+              <tr>
+                <td class="hi">Prosedur operasi tidak update</td>
+                <td><span class="badge b-d">El.8</span></td>
+                <td style="font-size:10.5px">Lead Ops</td>
+                <td style="font-family:monospace;font-size:10.5px">15 Mar</td>
+                <td><span class="badge b-o">Open</span></td>
+              </tr>
+              <tr>
+                <td class="hi">Kompetensi operator belum recert.</td>
+                <td><span class="badge b-d">El.9</span></td>
+                <td style="font-size:10.5px">HR & Training</td>
+                <td style="font-family:monospace;font-size:10.5px">01 Apr</td>
+                <td><span class="badge b-y">Progress</span></td>
+              </tr>
+              <tr>
+                <td class="hi">Emergency drill belum terjadwal</td>
+                <td><span class="badge b-d">El.13</span></td>
+                <td style="font-size:10.5px">HSE Coord.</td>
+                <td style="font-family:monospace;font-size:10.5px">20 Mar</td>
+                <td><span class="badge b-o">Open</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- MoC Pending -->
+        <div class="panel">
+          <div class="ph">
+            <div class="pt">↻ MoC Pending Approval <span class="ptag b-o">4 PENDING</span></div>
+            <div class="pa">Semua →</div>
+          </div>
+          <div class="pb" style="padding:8px 13px">
+            <div class="moc-item">
+              <div class="moc-num" style="background:rgba(232,80,80,.2);color:var(--red)">1</div>
+              <div class="moc-info">
+                <div class="moc-title">Penggantian Control Valve CV-101</div>
+                <div class="moc-meta"><span>Technical</span><span>Pressure Letdown</span><span style="color:var(--red);font-weight:600">HIGH RISK</span></div>
+              </div>
+              <span class="badge b-r">Lvl 3</span>
+            </div>
+            <div class="moc-item">
+              <div class="moc-num" style="background:rgba(232,80,80,.2);color:var(--red)">2</div>
+              <div class="moc-info">
+                <div class="moc-title">Modifikasi Relief Valve Setting</div>
+                <div class="moc-meta"><span>Technical</span><span>Subsea System</span><span style="color:var(--red);font-weight:600">HIGH RISK</span></div>
+              </div>
+              <span class="badge b-r">Lvl 3</span>
+            </div>
+            <div class="moc-item">
+              <div class="moc-num" style="background:rgba(232,192,64,.2);color:var(--yel)">3</div>
+              <div class="moc-info">
+                <div class="moc-title">Update SOP Pigging Operation</div>
+                <div class="moc-meta"><span>Operational</span><span>Subsea Pipeline</span><span style="color:var(--yel);font-weight:600">MEDIUM</span></div>
+              </div>
+              <span class="badge b-y">Lvl 2</span>
+            </div>
+            <div class="moc-item">
+              <div class="moc-num" style="background:rgba(168,214,54,.15);color:var(--lime)">4</div>
+              <div class="moc-info">
+                <div class="moc-title">Modifikasi Heater Setpoint</div>
+                <div class="moc-meta"><span>Technical</span><span>Water Bath Heater</span><span style="color:var(--lime);font-weight:600">LOW RISK</span></div>
+              </div>
+              <span class="badge b-g">Lvl 1</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- QRA Risk Summary -->
+        <div class="panel">
+          <div class="ph">
+            <div class="pt">◉ QRA Risk Summary</div>
+            <div class="pa">Detail →</div>
+          </div>
+          <div class="pb">
+            <!-- Risk count boxes -->
+            <div class="risk-boxes">
+              <div class="rbox" style="background:rgba(232,80,80,.12)">
+                <div class="rv" style="color:var(--red)">2</div>
+                <div class="rl" style="color:var(--red)">Unacceptable</div>
+              </div>
+              <div class="rbox" style="background:rgba(232,192,64,.1)">
+                <div class="rv" style="color:var(--yel)">9</div>
+                <div class="rl" style="color:var(--yel)">ALARP</div>
+              </div>
+              <div class="rbox" style="background:rgba(168,214,54,.1)">
+                <div class="rv" style="color:var(--lime)">7</div>
+                <div class="rl" style="color:var(--lime)">Acceptable</div>
+              </div>
+            </div>
+            <!-- Risk scenarios -->
+            <div class="sr">
+              <div class="sr-left">
+                <div class="sr-name">Ship Collision — FSRU</div>
+                <div class="sr-sub">Tower Yoke · NHA</div>
+              </div>
+              <div class="sr-right">
+                <div class="sr-ir">8.2×10⁻⁵</div>
+                <span class="badge b-y">ALARP</span>
+              </div>
+            </div>
+            <div class="sr">
+              <div class="sr-left">
+                <div class="sr-name">Drop Object — Crane</div>
+                <div class="sr-sub">Onshore Receiving · NHA</div>
+              </div>
+              <div class="sr-right">
+                <div class="sr-ir">1.5×10⁻⁴</div>
+                <span class="badge b-r">Unaccept.</span>
+              </div>
+            </div>
+            <div class="sr">
+              <div class="sr-left">
+                <div class="sr-name">Jet Fire — Gas Release</div>
+                <div class="sr-sub">Pressure Letdown · HHA</div>
+              </div>
+              <div class="sr-right">
+                <div class="sr-ir">9.8×10⁻⁵</div>
+                <span class="badge b-y">ALARP</span>
+              </div>
+            </div>
+            <div class="sr">
+              <div class="sr-left">
+                <div class="sr-name">Transport Risk — LNG Carrier</div>
+                <div class="sr-sub">Subsea Pipeline Route · NHA</div>
+              </div>
+              <div class="sr-right">
+                <div class="sr-ir">3.1×10⁻⁶</div>
+                <span class="badge b-g">Acceptable</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app-body -->
+
+</body>
+</html>
